@@ -45,7 +45,7 @@ const Main = () => {
         {isDesktopOrLaptop &&
             <div className="grid grid-cols-8 gap-6 mx-4">
                 <div className="col-span-2">
-                    <Personal username={user?.username} userAvatar={user?.avatar}/>
+                    <Personal username={user?.username} userAvatar={user?.avatar} userHeadline={user?.headline?? ""}/>
                     {/* /<Friends/> */}
                 </div>
                 <div className="col-span-4">
@@ -66,7 +66,7 @@ const Main = () => {
 
         {isTabletOrMobile &&
             <div>
-                <Personal username={user?.username} userAvatar={user?.avatar}/>
+                <Personal username={user?.username} userAvatar={user?.avatar} userHeadline={user?.headline?? ""}/>
                 <Friends userFriends={user?.friends}/>
                 <SearchBar setKeyword={setKeyword}/>
                 <ShareBox userId={user?.id} userPosts={userPosts} setUserPosts={setUserPosts} />

@@ -11,7 +11,7 @@ export interface User {
     avatar: string;
     posts: Post[] ;
     friends?: number[]
-    status?:string
+    headline?:string
 }
 
 export interface DummyUser {

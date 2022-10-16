@@ -1,7 +1,7 @@
 
 import { configureStore } from '@reduxjs/toolkit'
 import { User, Post, LoginState, AppState, DummyUser, LoginPayload } from "./types"
-import { ActionTypes, LOAD_POSTS, LOAD_DUMMY_USERS, REGISTER, TEST, LOGIN, LOGOUT, UPDATE_PROFILE, GET_POSTS } from "./actions"
+import { ActionTypes, LOAD_POSTS, LOAD_DUMMY_USERS, REGISTER, TEST, LOGIN, LOGOUT, UPDATE_PROFILE, GET_POSTS, UPDATE_HEADLINE } from "./actions"
 
 // Redux Persist
 import storage from 'redux-persist/lib/storage';
@@ -86,6 +86,13 @@ const getUsersPosts = (posts: Post[], users: User[]): User[] => {
     return newUsers;
 }
 
+const updateHeadline = (headline: string, users: User[], userId: number): User[] => {
+    let newUsers: User[] = [...users]
+    newUsers[userId].headline = headline;
+
+    return newUsers;
+}
+
 // const initialLoginState : LoginState = {
 //     isLogin: false,
 //     user: null
@@ -147,6 +154,12 @@ function AppReducer(
                 isPostLoaded: true,
                 users: getUsersPosts(action.payload, state.users),
                 posts: action.payload
+            }
+
+        case UPDATE_HEADLINE:
+            return {
+                ...state,
+                users: updateHeadline(action.payload, state.users, state.loginState.userId),
             }
         
         // case GET_POSTS:

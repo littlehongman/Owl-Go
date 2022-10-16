@@ -7,6 +7,7 @@ export const LOAD_DUMMY_USERS = "LOAD_DUMMY_USERS"
 export const UPDATE_PROFILE = "UPDATE_PROFILE"
 export const LOAD_POSTS = "LOAD_POSTS"
 export const GET_POSTS = "GET_POSTS"
+export const UPDATE_HEADLINE = "UPDATE_HEADLINE"
 
 export const TEST = "TEST"
 // export const ADDPOST = "POST"
@@ -20,6 +21,7 @@ export type ActionTypes =
     | {type: typeof UPDATE_PROFILE; payload: User}
     | {type: typeof LOAD_POSTS; payload: Post[]}
     | {type: typeof GET_POSTS;}
+    | {type: typeof UPDATE_HEADLINE, payload: string}
     | {type: typeof TEST; payload: string}
 
 
@@ -54,6 +56,11 @@ export const loadPosts = (posts: Post[]): ActionTypes => ({
 
 export const getPosts = (): ActionTypes => ({
     type: GET_POSTS
+})
+
+export const updateHeadline = (headline: string): ActionTypes => ({
+    type: UPDATE_HEADLINE,
+    payload: headline
 })
 
 export const changeTest = (newText: string): ActionTypes => ({
