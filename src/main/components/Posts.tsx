@@ -70,10 +70,10 @@ const Posts = ({userId, userData, userPosts, keyword}: UserProps) => {
                     </button>
                 </div>
             </div> */}
-            <div className="grid h-screen place-items-center">
+            <div className="grid h-screen place-items-center items-center justify-center">
                 {userPosts?.map((post, i) => (
                     ((filter(userData? userData[post.userId - 1]:"")) || filter(post.body)) &&
-                    <div className="items-center justify-center mb-4" key={i}>
+                    <div className="items-center justify-center mb-4  w-full" key={i}>
                         <div className="px-5 py-4 bg-white dark:bg-gray-800 shadow rounded-lg max-w-lg">
                             <div className="flex mb-4">
                                 <img className="w-12 h-12 rounded-full" src={"https://api.lorem.space/image/face?w=150&h=150&hash=" + post.userId}/>

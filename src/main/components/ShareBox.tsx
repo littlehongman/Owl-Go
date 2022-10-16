@@ -20,9 +20,9 @@ const ShareBox = ({userId, userPosts, setUserPosts}: UserProps) => {
     });
 
     const handleClick = (e: React.FormEvent<HTMLFormElement>):void => {
+        console.log(filesContent);
         e.preventDefault();
-
-    
+        
         if (message.trim() !== "" && userId){
             //let newPosts = [...userPosts?? []]
 
@@ -31,9 +31,15 @@ const ShareBox = ({userId, userPosts, setUserPosts}: UserProps) => {
                 id: 100 + Math.floor(Math.random() * 100),
                 title: "",
                 body: message.trim(),
-                img: "https://source.unsplash.com/random/640x360?sig=" + 100 + Math.floor(Math.random() * 100),
+                img: "",
                 timestamp: Date.now()
             }
+
+            if (filesContent.length > 0){
+                post.img = "https://source.unsplash.com/random/640x360?sig=" + 100 + Math.floor(Math.random() * 100)
+            }
+                
+                //post.img = filesContent[0].name // TO BE MODIFIED
 
             setUserPosts([post, ...userPosts]);
             toast.success("Successful Post", {duration: 1000})

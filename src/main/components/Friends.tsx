@@ -8,7 +8,7 @@ interface UserProps {
 }
 
 interface Friend {
-    name: string;
+    username: string;
     headline: string;
     avatar: string;
 }
@@ -16,28 +16,29 @@ interface Friend {
 const Friends = ({ userFriends }: UserProps) => {
     const users = useSelector((state: AppState) => state.users)
     const [friendData, setFriendData] = useState<Friend[]>([])
+    const [newFriendName, setNewFriendName] = useState<string>("")
 
     const inputRef = useRef<HTMLInputElement>(null);
    // const [friendIds, setFriendIds] = useState<number[]>([...userFriends?? []])
     const sentences: string[] = ["Nothing new here", "Actively recruting", "Having Fun in campus"]
 
-    const getFriendData = (displayFriendIds: number[]):void => {
-        if (displayFriendIds){
-            let friends: Friend[] = []
+    // const getFriendData = (displayFriendIds: number[]):void => {
+    //     if (displayFriendIds){
+    //         let friends: Friend[] = []
 
-            for(const userId of displayFriendIds){
-                let friend: Friend = {
-                    name: users[userId - 1].name,
-                    headline: sentences[Math.floor(Math.random() * 3)],
-                    avatar: users[userId - 1].avatar
-                }
+    //         for(const userId of displayFriendIds){
+    //             let friend: Friend = {
+    //                 name: users[userId - 1].name,
+    //                 headline: sentences[Math.floor(Math.random() * 3)],
+    //                 avatar: users[userId - 1].avatar
+    //             }
 
-                friends.push(friend);
-            }
+    //             friends.push(friend);
+    //         }
 
-            setFriendData(friends);
-        }
-    }
+    //         setFriendData(friends);
+    //     }
+    // }
 
     const handleRemoveFriend = (index: number):void => {
         let newFriendData: Friend[] = [...friendData]
@@ -49,10 +50,23 @@ const Friends = ({ userFriends }: UserProps) => {
         // getFriendData(newFriendIds);
     } 
 
-    const handleAddFriend = ():void => {
-        if (inputRef.current?.value !== undefined && inputRef.current.value !== ""){
+    const handleAddFriend = (e: React.FormEvent<HTMLFormElement>):void => {
+        e.preventDefault();
+
+        if (newFriendName.trim() !== ""){
+            if (!users.map((user) => user.username).includes(newFriendName)){
+                toast.error("User Not Found", {duration: 1000});
+                return;
+            }
+
+            if (friendData.map((friend) => friend.username).includes(newFriendName)){
+                toast.error("Already Friend", {duration: 1000});
+                return;
+            }
+
+
             let friend: Friend = {
-                name: inputRef.current.value,
+                username: newFriendName,
                 headline: sentences[Math.floor(Math.random() * 3)],
                 avatar: "https://api.lorem.space/image/face?w=150&h=150&hash=" + Math.floor(Math.random() * 100),
             }
@@ -72,7 +86,7 @@ const Friends = ({ userFriends }: UserProps) => {
 
             for(const userId of userFriends){
                 let friend: Friend = {
-                    name: users[userId - 1].name,
+                    username: users[userId - 1].username,
                     headline: sentences[Math.floor(Math.random() * 3)],
                     avatar: users[userId - 1].avatar
                 }
@@ -102,7 +116,7 @@ const Friends = ({ userFriends }: UserProps) => {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                        {friend.name}
+                                        {friend.username}
                                     </p>
                                     <p className="text-xs text-slate-600 truncate dark:text-gray-400">
                                         {friend.headline}
@@ -120,10 +134,14 @@ const Friends = ({ userFriends }: UserProps) => {
                     ))}
                     
                 </ul>
-                <div className="w-full flex justify-center mt-8 mb-4 space-x-2">
-                    <input id="message" ref={inputRef} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username"></input>
-                    <button type="button" onClick={() => handleAddFriend()} className="inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-gray-300 hover:shadow-lg focus:bg-gray-300 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out">Add</button>
-                </div>
+                <form onSubmit={handleAddFriend}>
+                    <div className="w-full flex justify-center mt-8 mb-4 space-x-2">
+                        
+                            <input id="message" onChange={(e) => setNewFriendName(e.target.value)} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username"></input>
+                            <button type="submit"  className="inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-gray-300 hover:shadow-lg focus:bg-gray-300 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out">Add</button>
+                        
+                    </div>
+                </form>
             </div>
         </div>
         {/* <div className="container mt-10 rounded-xl shadow border p-8 bg-white">

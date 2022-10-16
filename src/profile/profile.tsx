@@ -15,7 +15,7 @@ const Profile = () => {
         }
         return null;
     });
-    
+
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
@@ -32,20 +32,20 @@ const Profile = () => {
         //dispatch(updateProfile(data));
     };
 
-    const DateToString = (date: Date): string => {
-        console.log(date);
-        const year:string = date.getFullYear().toString();
-        let month: string = (date.getMonth() + 1).toString();
-        let day: string = date.getDate().toString();
+    // const DateToString = (date: Date): string => {
+    //     console.log(date);
+    //     const year:string = date.getFullYear().toString();
+    //     let month: string = (date.getMonth() + 1).toString();
+    //     let day: string = date.getDate().toString();
 
-        if (month.length == 1)
-            month = '0' + month
-        if (day.length == 1)
-            day = '0' + day
+    //     if (month.length == 1)
+    //         month = '0' + month
+    //     if (day.length == 1)
+    //         day = '0' + day
 
         
-        return [year, month, day].join('-')
-    }
+    //     return [year, month, day].join('-')
+    // }
 
     useEffect(() => {
         if (user === null){
@@ -119,7 +119,8 @@ const Profile = () => {
                                                 pattern: /^[A-Za-z0-9]{0,}/i
                                             })}
                                             defaultValue={user?.username}
-                                            className="relative block w-full appearance-none  rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                            disabled
+                                            className="bg-slate-300 relative block w-full appearance-none  rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                     />
                                     {errors?.username?.type === "required" && <span className="before::content-['']  text-sm text-red-600">Username required</span>}
                                     {errors.username?.type === "validate" && <span className="before::content-['']  text-sm text-red-600">Username cannot start with a number</span>}
