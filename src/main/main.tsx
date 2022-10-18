@@ -11,7 +11,7 @@ import { useMediaQuery } from 'react-responsive'
 import { useNavigate } from 'react-router-dom'
 
 const Main = () => {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const navigate = useNavigate();
     //const isPostLoaded = useSelector((state: AppState) => state.isPostLoaded)
     const user = useSelector((state: AppState) => {
@@ -20,18 +20,25 @@ const Main = () => {
         }
         return null;
     });
-    const posts = useSelector((state: AppState) => state.posts)
+    
     const userData = useSelector((state: AppState) => state.users.map((user) => user.username))
 
+    // Friends
+    const [userFriends, setUserFriends] = useState<number[]>([...user?.friends?? []])
+
+    // Posts
+    const posts = useSelector((state: AppState) => state.posts)
     const [userPosts, setUserPosts] = useState<Post[]>([...user?.posts?? []])
-    const [randomPosts, setRandomPosts] = useState<Post[]>([...posts].sort(() => 0.5 - Math.random()).slice(0, 10).sort((a, b) => b.timestamp - a.timestamp))
+    // const [randomPosts, setRandomPosts] = useState<Post[]>([...posts].sort(() => 0.5 - Math.random()).slice(0, 10).sort((a, b) => b.timestamp - a.timestamp))
+    const [friendPosts, setFriendPosts] = useState<Post[]>([...posts].filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp))
+    
+    // Search Bar
     const [keyword, setKeyword] = useState<string>("")
 
     // Responsive
     const isDesktopOrLaptop = useMediaQuery({query: '(min-width: 864px)'})
     const isTabletOrMobile = useMediaQuery({ query: '(max-width: 864px)' })
 
-        // Load Dummy Users
     useEffect(() => {
         // console.log(user?.posts.length);
         // console.log(user?.posts)
@@ -39,6 +46,11 @@ const Main = () => {
             navigate("../")
         }    
     }, [])
+
+    useEffect(() => {
+        console.log(userFriends);
+        setFriendPosts([...posts].filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp))
+    }, [userFriends])
 
     return (
         <>
@@ -52,11 +64,12 @@ const Main = () => {
                     {/* <ShareBox/> */}
                     <SearchBar setKeyword={setKeyword}/>
                     <ShareBox userId={user?.id} userPosts={userPosts} setUserPosts={setUserPosts} />
-                    {(user?.posts.length !== 0) && <Posts userId={user?.id} userData={userData} userPosts={userPosts} keyword={keyword}/>}
-                    {(user?.posts.length === 0) && <Posts userId={user?.id} userData={userData} userPosts={randomPosts} keyword={keyword}/>}
+                    {(friendPosts.length >= 0) && <Posts userId={user?.id} userData={userData} userPosts={friendPosts} keyword={keyword}/>}
+                    {/* {(user?.posts.length !== 0) && <Posts userId={user?.id} userData={userData} userPosts={userPosts} keyword={keyword}/>} */}
+                    {/* {(user?.posts.length === 0) && <Posts userId={user?.id} userData={userData} userPosts={randomPosts} keyword={keyword}/>} */}
                 </div>
                 <div className="col-span-2">
-                    <Friends userFriends={user?.friends}/>
+                    <Friends username={user?.username} userFriends={userFriends} setUserFriends={setUserFriends}/>
                 </div>
                 
                 {/* <Friends/>
@@ -67,11 +80,11 @@ const Main = () => {
         {isTabletOrMobile &&
             <div>
                 <Personal username={user?.username} userAvatar={user?.avatar} userHeadline={user?.headline?? ""}/>
-                <Friends userFriends={user?.friends}/>
+                <Friends username={user?.username} userFriends={userFriends} setUserFriends={setUserFriends}/>
                 <SearchBar setKeyword={setKeyword}/>
                 <ShareBox userId={user?.id} userPosts={userPosts} setUserPosts={setUserPosts} />
                 {(user?.posts.length !== 0) && <Posts userId={user?.id} userData={userData} userPosts={userPosts} keyword={keyword}/>}
-                {(user?.posts.length === 0) && <Posts userId={user?.id} userData={userData} userPosts={randomPosts} keyword={keyword}/>}
+                {/* {(user?.posts.length === 0) && <Posts userId={user?.id} userData={userData} userPosts={randomPosts} keyword={keyword}/>} */}
             </div>
         }
         </>

@@ -4,7 +4,9 @@ import { useSelector } from "react-redux";
 import { AppState } from "../../store/types";
 
 interface UserProps {
+    username?: string
     userFriends?: number[];
+    setUserFriends: React.Dispatch<React.SetStateAction<number[]>>
 }
 
 interface Friend {
@@ -13,39 +15,27 @@ interface Friend {
     avatar: string;
 }
 
-const Friends = ({ userFriends }: UserProps) => {
+const Friends = ({ username, userFriends, setUserFriends }: UserProps) => {
     const users = useSelector((state: AppState) => state.users)
     const [friendData, setFriendData] = useState<Friend[]>([])
     const [newFriendName, setNewFriendName] = useState<string>("")
 
-    const inputRef = useRef<HTMLInputElement>(null);
+    //const inputRef = useRef<HTMLInputElement>(null);
    // const [friendIds, setFriendIds] = useState<number[]>([...userFriends?? []])
     const sentences: string[] = ["Nothing new here", "Actively recruting", "Having Fun in campus"]
 
-    // const getFriendData = (displayFriendIds: number[]):void => {
-    //     if (displayFriendIds){
-    //         let friends: Friend[] = []
-
-    //         for(const userId of displayFriendIds){
-    //             let friend: Friend = {
-    //                 name: users[userId - 1].name,
-    //                 headline: sentences[Math.floor(Math.random() * 3)],
-    //                 avatar: users[userId - 1].avatar
-    //             }
-
-    //             friends.push(friend);
-    //         }
-
-    //         setFriendData(friends);
-    //     }
-    // }
-
+   
     const handleRemoveFriend = (index: number):void => {
-        let newFriendData: Friend[] = [...friendData]
+        // let newFriendData: Friend[] = [...friendData]
 
-        newFriendData.splice(index, 1)
+        // newFriendData.splice(index, 1)
 
-        setFriendData(newFriendData);
+        // setFriendData(newFriendData);
+        let newUserFriends: number[] = [...userFriends?? []]
+        newUserFriends.splice(index, 1)
+        setUserFriends(newUserFriends)
+
+
         toast.success("Friend Unfollowed", {duration: 1000});
         // getFriendData(newFriendIds);
     } 
@@ -58,19 +48,30 @@ const Friends = ({ userFriends }: UserProps) => {
                 toast.error("User Not Found", {duration: 1000});
                 return;
             }
+            
+            if(newFriendName === username){
+                toast.error("Cannot Add Yourself", {duration: 1000});
+                return
+            }
+
 
             if (friendData.map((friend) => friend.username).includes(newFriendName)){
                 toast.error("Already Friend", {duration: 1000});
                 return;
             }
 
+            let newFriendId = users.findIndex(user => {
+                return user.username === newFriendName;
+            }) + 1;
+            
+            setUserFriends([...userFriends?? [], newFriendId])
 
-            let friend: Friend = {
-                username: newFriendName,
-                headline: sentences[Math.floor(Math.random() * 3)],
-                avatar: "https://api.lorem.space/image/face?w=150&h=150&hash=" + Math.floor(Math.random() * 100),
-            }
-            setFriendData([...friendData, friend]);
+            // let friend: Friend = {
+            //     username: newFriendName,
+            //     headline: sentences[Math.floor(Math.random() * 3)],
+            //     avatar: "https://api.lorem.space/image/face?w=150&h=150&hash=" + Math.floor(Math.random() * 100),
+            // }
+            //setFriendData([...friendData, friend]);
             toast.success("Friend Added", {duration: 1000});
         }
         else{
@@ -97,7 +98,7 @@ const Friends = ({ userFriends }: UserProps) => {
             setFriendData(friends);
         }
             
-    }, [])
+    }, [userFriends])
 
 
     return (
