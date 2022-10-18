@@ -1,8 +1,28 @@
 import axios from 'axios'
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+// import { useDispatch, useSelector } from 'react-redux'
 import { useFilePicker } from 'use-file-picker'
 import { AppState, Post, User } from '../../store/types'
+import { Button, ButtonGroup } from '@chakra-ui/react'
+import { MdBuild , MdCall } from "react-icons/md"
+import { BiMessageAltDetail } from "react-icons/bi"
+import styled, { keyframes } from "styled-components";
+import { slideInDown } from 'react-animations';
+
+import { ListItem, UnorderedList } from '@chakra-ui/react'
+ 
+const slideAnimation = keyframes`${slideInDown}`;
+ 
+const SlideDiv = styled.div`
+  animation: 1s ${slideAnimation};
+`;
+
+
+// const bounceAnimation = keyframes`${bounce}`;
+
+// const BouncyDiv = styled.div`
+//   animation: 1s ${bounceAnimation};
+// `;
 
 
 interface UserProps {
@@ -38,6 +58,7 @@ const Posts = ({userId, userData, userPosts, keyword}: UserProps) => {
         return false
     }
 
+    const [showComment, setShowComment] = useState<boolean>(true)
 
     return (//bg-white shadow-lg rounded-lg mx-4 mt-10 md:mx-auto my-6 max-w-md md:max-w-2xlZ
          <div>
@@ -65,7 +86,7 @@ const Posts = ({userId, userData, userPosts, keyword}: UserProps) => {
                                 </div>  
                                 <div className="ml-1 text-gray-500 dark:text-gray-400 font-light">33 comments</div> */}
                                 {/* <div className="flex items-center justify-center"> */}
-                            <div className=" w-full inline-flex shadow-md hover:shadow-lg focus:shadow-lg" role="group">
+                            {/* <div className=" w-full inline-flex shadow-md hover:shadow-lg focus:shadow-lg" role="group">
                                 
                                 
                                 <button type="submit" className="group relative flex w-full justify-center w-full rounded-l  px-6 py-2.5 bg-gray-600 text-white font-medium text-xs leading-tight uppercase hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-0 active:bg-blue-800 transition duration-150 ease-in-out">
@@ -75,9 +96,9 @@ const Posts = ({userId, userData, userPosts, keyword}: UserProps) => {
                                         </svg>
                                     </span>
                                     Comment
-                                </button>
+                                </button> 
                                 
-                                {/* <button type="button" className=" inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-0 active:bg-blue-800 transition duration-150 ease-in-out">Middle</button> */}
+                                <button type="button" className=" inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-0 active:bg-blue-800 transition duration-150 ease-in-out">Middle</button>
                             
                                 <button type="submit" className="group relative flex w-full justify-center w-full rounded-r  px-6 py-2.5 bg-gray-600 text-white font-medium text-xs leading-tight uppercase hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-0 active:bg-blue-800 transition duration-150 ease-in-out">
                                     <span className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -87,8 +108,28 @@ const Posts = ({userId, userData, userPosts, keyword}: UserProps) => {
                                     </span>
                                     Modify
                                 </button>
-                            </div>                        
+                               
+                                   
+                            
+                            </div> */}
+                            <div className="grid grid-cols-2 gap-4 mx-2 mt-2">
+                                <Button onClick={() => setShowComment(!showComment) } leftIcon={<BiMessageAltDetail />} colorScheme='facebook' variant='outline'>Comment</Button>
+                                <Button leftIcon={<MdBuild />} colorScheme='facebook' variant='outline'>Modify</Button>
+                            </div>
+                            <div hidden={showComment}>
+                                <UnorderedList>
+                                    <ListItem>Lorem ipsum dolor sit amet</ListItem>
+                                    <ListItem>Consectetur adipiscing elit</ListItem>
+                                    <ListItem>Integer molestie lorem at massa</ListItem>
+                                    <ListItem>Facilisis in pretium nisl aliquet</ListItem>
+                                </UnorderedList>
+                            </div>
                         </div>
+                        
+                        {/* <SlideDiv hidden={showComment}> */}
+                            {/* <Button hidden={showComment} leftIcon={<BiMessageAltDetail />} colorScheme='facebook' variant='outline'>Comment</Button> */}
+                                
+                        {/* </SlideDiv> */}
                     </div>
                 ))}
             </div>

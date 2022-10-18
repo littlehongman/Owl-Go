@@ -14,8 +14,9 @@ import Profile from './profile/profile';
 import './App.css';
 import Register from "./auth/registration/Registration";
 
+// UI elements
 import {Toaster} from "react-hot-toast";
-
+import { ChakraProvider } from '@chakra-ui/react'
 
 export default function App() {
   
@@ -24,16 +25,18 @@ export default function App() {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         
-        <Toaster/>
-        <Router>
-          <Header/>
-          <Routes>
-              <Route path={'/'} element= {<Auth />}/>
-              <Route path={'/register'} element= {<Register />}/>
-              <Route path={'/main'} element= {<Main />}/>
-              <Route path={'/profile'} element= {<Profile/>}/>
-          </Routes>
-        </Router>
+        <ChakraProvider>
+          <Toaster/>
+          <Router>
+            <Header/>
+            <Routes>
+                <Route path={'/'} element= {<Auth />}/>
+                <Route path={'/register'} element= {<Register />}/>
+                <Route path={'/main'} element= {<Main />}/>
+                <Route path={'/profile'} element= {<Profile/>}/>
+            </Routes>
+          </Router>
+        </ChakraProvider>
         {/* <Header/>
         {/* <Auth/> */}
         {/* <Main/> */}
