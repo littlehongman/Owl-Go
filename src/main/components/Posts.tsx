@@ -9,7 +9,7 @@ import { BiMessageAltDetail } from "react-icons/bi"
 import styled, { keyframes } from "styled-components";
 import { slideInDown } from 'react-animations';
 
-import { ListItem, UnorderedList } from '@chakra-ui/react'
+import { ListItem, UnorderedList, List } from '@chakra-ui/react'
  
 const slideAnimation = keyframes`${slideInDown}`;
  
@@ -59,6 +59,13 @@ const Posts = ({userId, userData, userPosts, keyword}: UserProps) => {
     }
 
     const [showComment, setShowComment] = useState<boolean>(true)
+
+    const comments: any[] = [
+        {name: "Jacky", body: "Great news to hear"},
+        {name: "Beck", body: "That's brilliant"},
+        {name: "Peter", body: "Avengers Assemble"}
+    ];
+
 
     return (//bg-white shadow-lg rounded-lg mx-4 mt-10 md:mx-auto my-6 max-w-md md:max-w-2xlZ
          <div>
@@ -116,13 +123,42 @@ const Posts = ({userId, userData, userPosts, keyword}: UserProps) => {
                                 <Button onClick={() => setShowComment(!showComment) } leftIcon={<BiMessageAltDetail />} colorScheme='facebook' variant='outline'>Comment</Button>
                                 <Button leftIcon={<MdBuild />} colorScheme='facebook' variant='outline'>Modify</Button>
                             </div>
-                            <div hidden={showComment}>
-                                <UnorderedList>
-                                    <ListItem>Lorem ipsum dolor sit amet</ListItem>
-                                    <ListItem>Consectetur adipiscing elit</ListItem>
+                            <div hidden={showComment} className="mt-4">
+                                {/* <div className="relative max-w-md mt-10 mx-auto md:max-w-2xl min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded-xl">
+                                    <div>Lorem ipsum dolor sit amet</div>
+                                    <div>Lorem ipsum dolor sit amet</div>
+                                    <div>Lorem ipsum dolor sit amet</div>
+                                    <div>Lorem ipsum dolor sit amet</div>
+                                    
+                                </div> */}
+                                <hr/>
+                                <List spacing={3} className="mt-4">
+                                    {comments.map((comment, i) => (
+                                        <ListItem key={i}>
+                                        <div className="flex space-x-1">
+                                                <div className="flex-shrink-0">
+                                                    <img className="w-8 h-8 rounded-full" src={`https://api.lorem.space/image/face?w=150&h=150&hash=${i}`} alt="Neil image"/>
+                                                </div>
+                                                <div className="bg-gray-100 p-2 w-full rounded-lg ">
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-sm font-bold text-gray-900 truncate dark:text-white">
+                                                            {comment.name}
+                                                        </p>
+                                                    </div>
+                                                    <div className="flex-1 min-w-0 mt-2">
+                                                        <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                                            {comment.body}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ListItem>
+                                    ))}
+                                    
+                                    {/* <ListItem>Consectetur adipiscing elit</ListItem>
                                     <ListItem>Integer molestie lorem at massa</ListItem>
-                                    <ListItem>Facilisis in pretium nisl aliquet</ListItem>
-                                </UnorderedList>
+                                    <ListItem>Facilisis in pretium nisl aliquet</ListItem> */}
+                                </List>
                             </div>
                         </div>
                         
