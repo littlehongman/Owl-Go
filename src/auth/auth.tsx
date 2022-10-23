@@ -12,30 +12,6 @@ const Auth = () => {
     //const isPostLoaded = useSelector((state: AppState) => state.isPostLoaded)
     const dispatch = useDispatch();
 
-    const getRandomTime = (): number => {
-        return new Date(new Date('2020/1/1').getTime() + Math.random() * (Date.now() - new Date('2020/1/1').getTime())).getTime()
-    }
-
-    const transfromPosts = (res: AxiosResponse): Post[] => {
-        let posts: Post[] = []
-
-        res.data.forEach((item:any, idx:any) => {
-            let post: Post = {
-                userId: item['userId'],
-                id: item['id'],
-                title: item['title'],
-                body: item['body'],
-                img: "https://source.unsplash.com/random/640x360?sig=" + idx,
-                timestamp: getRandomTime()
-            } 
-
-            posts.push(post);
-            
-        });
-
-        return posts
-    }
-
     // Load Dummy Users
     useEffect(() => {
         // if (!loadDummies){
@@ -43,30 +19,9 @@ const Auth = () => {
                 dispatch(loadDummyUsers(res['data']))
 
                 axios.get("https://jsonplaceholder.typicode.com/posts").then(res => {
-                    // let posts: Post[] = []
-
-                    // res.data.forEach((item:any, idx:any) => {
-                    //     let post: Post = {
-                    //         userId: item['userId'],
-                    //         id: item['id'],
-                    //         title: item['title'],
-                    //         body: item['body'],
-                    //         img: "https://source.unsplash.com/random/640x360?sig=" + idx,
-                    //         timestamp: getRandomTime()
-                    //     } 
-
-                    //     posts.push(post);
-                        
-                    // });
-            
-                    dispatch(loadPosts(transfromPosts(res))); 
+                    dispatch(loadPosts(res)); 
                 })
             })
-
-        
-        // }
-        
-       
     }, [])
 
 

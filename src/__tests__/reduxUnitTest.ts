@@ -1,5 +1,6 @@
 import { persistedReducer, dummyUsersToUsers } from '../store/store'
-import { login, logout, loadDummyUsers } from '../store/actions'
+import { login, logout, loadDummyUsers, loadPosts } from '../store/actions'
+import { fetchPosts } from '../util/util';
 import axios from 'axios';
 
 jest.mock('axios');
@@ -900,10 +901,30 @@ test('logout an user', () => {
 });
 
 
-test('fetch articles for current logged in user', () => {
+test('fetch articles for current logged in user', async() => {
+  mockedAxios.get.mockResolvedValueOnce({ data: posts });
+  let response = await fetchPosts();
+  let userIdx = 0;
+
   let initState = persistedReducer(undefined, loadDummyUsers(users))
+  let loginState = persistedReducer(initState, login(userIdx));
+  let fetchPostState = persistedReducer(loginState, loadPosts(response))
+
+  expect(fetchPostState.users[userIdx].posts.length).toEqual(10);
+  
+  let friendPosts = fetchPostState.posts.filter((post) => fetchPostState.users[userIdx].friends?.includes(post.userId))
+
+  expect(friendPosts.length).toEqual(30);
+});
 
 
+test("fetch the logged in user\'s profile username", () => {
+  let userIdx = 0;
 
-}
+  let initState = persistedReducer(undefined, loadDummyUsers(users))
+  let loginState = persistedReducer(initState, login(userIdx));
+
+  expect(loginState.users[userIdx].username).toEqual("Bret"); 
+
+});
 

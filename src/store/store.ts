@@ -7,11 +7,36 @@ import { ActionTypes, LOAD_POSTS, LOAD_DUMMY_USERS, REGISTER, TEST, LOGIN, LOGOU
 import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import thunk from 'redux-thunk';
+import { AxiosResponse } from 'axios';
 
 // const addUser = (users: User[], newUser: User): User[] => {
 //     console.log(users);
 //     return ;
 // }
+
+const getRandomTime = (): number => {
+    return new Date(new Date('2020/1/1').getTime() + Math.random() * (Date.now() - new Date('2020/1/1').getTime())).getTime()
+}
+
+const transfromPosts = (res: AxiosResponse): Post[] => {
+    let posts: Post[] = []
+
+    res.data.forEach((item:any, idx:any) => {
+        let post: Post = {
+            userId: item['userId'],
+            id: item['id'],
+            title: item['title'],
+            body: item['body'],
+            img: "https://source.unsplash.com/random/640x360?sig=" + idx,
+            timestamp: getRandomTime()
+        } 
+
+        posts.push(post);
+        
+    });
+
+    return posts
+}
 
 export const dummyUsersToUsers = (users: User[], dummyUsers: DummyUser[]): User[] => {
     if(users.length === 0){
@@ -164,11 +189,13 @@ function AppReducer(
             }
         
         case LOAD_POSTS:
+            let resToPosts = transfromPosts(action.payload);
+
             return {
                 ...state,
                 // isPostLoaded: true,
-                users: getUsersPosts(action.payload, state.users),
-                posts: action.payload
+                users: getUsersPosts(resToPosts, state.users),
+                posts: resToPosts
             }
 
         case UPDATE_HEADLINE:

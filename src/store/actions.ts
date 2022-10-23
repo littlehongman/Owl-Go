@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { User, Post, DummyUser, LoginPayload } from "./types";
 
 export const REGISTER = "REGISTER"
@@ -19,7 +20,7 @@ export type ActionTypes =
     | {type: typeof LOGOUT}
     | {type: typeof LOAD_DUMMY_USERS; payload: DummyUser[]}
     | {type: typeof UPDATE_PROFILE; payload: User}
-    | {type: typeof LOAD_POSTS; payload: Post[]}
+    | {type: typeof LOAD_POSTS; payload: AxiosResponse}
     | {type: typeof GET_POSTS;}
     | {type: typeof UPDATE_HEADLINE, payload: string}
     | {type: typeof TEST}
@@ -49,7 +50,7 @@ export const updateProfile = (user: User): ActionTypes => ({
     payload: user
 })
 
-export const loadPosts = (posts: Post[]): ActionTypes => ({
+export const loadPosts = (posts: AxiosResponse): ActionTypes => ({
     type: LOAD_POSTS,
     payload: posts
 })
