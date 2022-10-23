@@ -9,10 +9,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppState, Post} from '../store/types'
 import { useMediaQuery } from 'react-responsive'
 import { useNavigate } from 'react-router-dom'
+import { updatePosts } from '../store/actions'
 
 const Main = () => {
-    // const dispatch = useDispatch();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     //const isPostLoaded = useSelector((state: AppState) => state.isPostLoaded)
     const user = useSelector((state: AppState) => {
         if(state.loginState.isLogin) {
@@ -32,6 +33,8 @@ const Main = () => {
     // const [randomPosts, setRandomPosts] = useState<Post[]>([...posts].sort(() => 0.5 - Math.random()).slice(0, 10).sort((a, b) => b.timestamp - a.timestamp))
     const [friendPosts, setFriendPosts] = useState<Post[]>([...posts].filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp))
     
+    const displayPosts = useSelector((state: AppState) => state.displayPosts)
+
     // Search Bar
     const [keyword, setKeyword] = useState<string>("")
 
@@ -48,8 +51,9 @@ const Main = () => {
     }, [])
 
     useEffect(() => {
-        console.log(userFriends);
-        setFriendPosts([...posts].filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp))
+        //console.log(userFriends);
+        dispatch(updatePosts(userFriends))
+        //setFriendPosts([...posts].filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp))
     }, [userFriends])
 
     return (
@@ -62,9 +66,9 @@ const Main = () => {
                 </div>
                 <div className="col-span-4">
                     {/* <ShareBox/> */}
-                    <SearchBar setKeyword={setKeyword}/>
+                    {/* <SearchBar setKeyword={setKeyword}/> */}
                     <ShareBox userId={user?.id} userPosts={userPosts} setUserPosts={setUserPosts} />
-                    {(friendPosts.length >= 0) && <Posts userId={user?.id} userData={userData} userPosts={friendPosts} keyword={keyword}/>}
+                    {(displayPosts.length >= 0) && <Posts userId={user?.id} userData={userData} userPosts={displayPosts} keyword={keyword}/>}
                     {/* {(user?.posts.length !== 0) && <Posts userId={user?.id} userData={userData} userPosts={userPosts} keyword={keyword}/>} */}
                     {/* {(user?.posts.length === 0) && <Posts userId={user?.id} userData={userData} userPosts={randomPosts} keyword={keyword}/>} */}
                 </div>
@@ -81,7 +85,7 @@ const Main = () => {
             <div>
                 <Personal username={user?.username} userAvatar={user?.avatar} userHeadline={user?.headline?? ""}/>
                 <Friends username={user?.username} userFriends={userFriends} setUserFriends={setUserFriends}/>
-                <SearchBar setKeyword={setKeyword}/>
+                {/* <SearchBar setKeyword={setKeyword}/> */}
                 <ShareBox userId={user?.id} userPosts={userPosts} setUserPosts={setUserPosts} />
                 {(user?.posts.length !== 0) && <Posts userId={user?.id} userData={userData} userPosts={userPosts} keyword={keyword}/>}
                 {/* {(user?.posts.length === 0) && <Posts userId={user?.id} userData={userData} userPosts={randomPosts} keyword={keyword}/>} */}

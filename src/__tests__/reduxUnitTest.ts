@@ -1,5 +1,5 @@
 import { persistedReducer, dummyUsersToUsers } from '../store/store'
-import { login, logout, loadDummyUsers, loadPosts } from '../store/actions'
+import { login, logout, loadDummyUsers, loadPosts, updatePosts } from '../store/actions'
 import { fetchPosts } from '../util/util';
 import axios from 'axios';
 
@@ -865,7 +865,8 @@ test('login the first user', async () => {
         loginState: {
             isLogin: true,
             userId: 0
-        }
+        },
+        displayPosts:[]
     });
 });
 
@@ -880,7 +881,8 @@ test('login an invalid user', () => {
         loginState: {
             isLogin: false,
             userId: -1
-        }
+        },
+        displayPosts:[]
     });
 });
 
@@ -896,7 +898,8 @@ test('logout an user', () => {
         loginState: {
             isLogin: false,
             userId: -1
-        }
+        },
+        displayPosts:[]
     });
 });
 
@@ -911,12 +914,54 @@ test('fetch articles for current logged in user', async() => {
   let fetchPostState = persistedReducer(loginState, loadPosts(response))
 
   expect(fetchPostState.users[userIdx].posts.length).toEqual(10);
-  
-  let friendPosts = fetchPostState.posts.filter((post) => fetchPostState.users[userIdx].friends?.includes(post.userId))
 
-  expect(friendPosts.length).toEqual(30);
+  fetchPostState = persistedReducer(fetchPostState, updatePosts(fetchPostState.users[userIdx].friends?? []))
+
+  expect(fetchPostState.displayPosts.length).toEqual(30);
 });
 
+test("add articles when adding a follower", async() => {
+  mockedAxios.get.mockResolvedValueOnce({ data: posts });
+  let response = await fetchPosts();
+  let userIdx = 0;
+  let userFriends = [2,3,4];
+
+  let initState = persistedReducer(undefined, loadDummyUsers(users))
+  let loginState = persistedReducer(initState, login(userIdx));
+  let fetchPostState = persistedReducer(loginState, loadPosts(response))
+
+  expect(fetchPostState.users[userIdx].posts.length).toEqual(10);
+
+  fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends))
+
+  expect(fetchPostState.displayPosts.length).toEqual(30);
+
+  userFriends.push(5);
+  fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends));
+  expect(fetchPostState.displayPosts.length).toEqual(40);
+});
+
+
+test("add articles when adding a follower", async() => {
+  mockedAxios.get.mockResolvedValueOnce({ data: posts });
+  let response = await fetchPosts();
+  let userIdx = 0;
+  let userFriends = [2,3,4];
+
+  let initState = persistedReducer(undefined, loadDummyUsers(users))
+  let loginState = persistedReducer(initState, login(userIdx));
+  let fetchPostState = persistedReducer(loginState, loadPosts(response))
+
+  expect(fetchPostState.users[userIdx].posts.length).toEqual(10);
+
+  fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends))
+
+  expect(fetchPostState.displayPosts.length).toEqual(30);
+
+  userFriends.pop();
+  fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends));
+  expect(fetchPostState.displayPosts.length).toEqual(20);
+});
 
 test("fetch the logged in user\'s profile username", () => {
   let userIdx = 0;

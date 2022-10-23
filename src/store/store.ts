@@ -1,7 +1,7 @@
 
 import { configureStore } from '@reduxjs/toolkit'
 import { User, Post, LoginState, AppState, DummyUser, LoginPayload } from "./types"
-import { ActionTypes, LOAD_POSTS, LOAD_DUMMY_USERS, REGISTER, TEST, LOGIN, LOGOUT, UPDATE_PROFILE, GET_POSTS, UPDATE_HEADLINE } from "./actions"
+import { ActionTypes, LOAD_POSTS, LOAD_DUMMY_USERS, REGISTER, TEST, LOGIN, LOGOUT, UPDATE_PROFILE, GET_POSTS, UPDATE_HEADLINE, UPDATE_POSTS } from "./actions"
 
 // Redux Persist
 import storage from 'redux-persist/lib/storage';
@@ -80,19 +80,6 @@ const login = (loginState: LoginState, userId: number, numsOfUser: number) => {
 }
 
 
-// const checkLogin = (users: User[], loginState: LoginState, loginUser: LoginPayload): LoginState => {
-//     let newLoginState: LoginState = {...loginState}
-
-//     for(const user of users){
-//         if (user.username === loginUser.username){
-//             newLoginState.state = 1;
-//             newLoginState.isLogin = true;
-//             newLoginState.user = user;
-//         }
-//     }
-
-//     return newLoginState
-// }
 
 const updateProfile = (users: User[], user: User): User[] => {
     let newUsers = [...users]
@@ -150,7 +137,8 @@ function AppReducer(
         loginState: {
             isLogin: false,
             userId: -1
-        }
+        },
+        displayPosts:[]
     }, 
         action: ActionTypes
 ){
@@ -189,13 +177,24 @@ function AppReducer(
             }
         
         case LOAD_POSTS:
+            // Modified may have problem
             let resToPosts = transfromPosts(action.payload);
+            //let userFriends = state.users[state.loginState.userId].friends?? [];
 
             return {
                 ...state,
                 // isPostLoaded: true,
                 users: getUsersPosts(resToPosts, state.users),
-                posts: resToPosts
+                posts: resToPosts,
+                //displayPosts:  resToPosts.filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp)
+            }
+        
+        case UPDATE_POSTS:
+            let userFriends = action.payload
+
+            return {
+                ...state,
+                displayPosts:  state.posts.filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp)
             }
 
         case UPDATE_HEADLINE:

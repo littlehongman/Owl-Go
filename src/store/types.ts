@@ -59,5 +59,6 @@ export interface AppState {
     // isPostLoaded: boolean;
     posts: Post[];
     loginState: LoginState;
+    displayPosts: Post[]
 }
 
