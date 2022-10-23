@@ -44,7 +44,6 @@ export interface Post {
 // 4: username duplicate
 
 export interface LoginState{
-    state: number;
     isLogin: boolean;
     userId: number
 }
@@ -57,9 +56,8 @@ export interface LoginPayload {
 export interface AppState {
     users: User[];
     loadDummies: boolean;
-    isPostLoaded: boolean;
+    // isPostLoaded: boolean;
     posts: Post[];
     loginState: LoginState;
-    test: string;
 }
 

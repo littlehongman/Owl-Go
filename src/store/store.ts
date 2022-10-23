@@ -13,28 +13,45 @@ import thunk from 'redux-thunk';
 //     return ;
 // }
 
-const dummyUsersToUsers = (users: User[], dummyUsers: DummyUser[]): User[] => {
-    let newUsers: User[] = []
+export const dummyUsersToUsers = (users: User[], dummyUsers: DummyUser[]): User[] => {
+    if(users.length === 0){
+        let newUsers: User[] = []
 
-    for(let dummy of dummyUsers){
-        let user: User = {
-            id: dummy.id,
-            name: dummy.name,
-            username: dummy.username,
-            password: dummy.address.street,
-            email: dummy.email,
-            phone: "123-123-1245",
-            birthday: "1998-01-02",
-            zipCode: "77024",
-            avatar: "https://api.lorem.space/image/face?w=150&h=150&hash=" + dummy.id,
-            friends: [1 + dummy.id % 10, 1 + (dummy.id + 1) % 10, 1 + (dummy.id + 2) % 10],
-            posts: []
-        };
+        for(let dummy of dummyUsers){
+            let user: User = {
+                id: dummy.id,
+                name: dummy.name,
+                username: dummy.username,
+                password: dummy.address.street,
+                email: dummy.email,
+                phone: "123-123-1245",
+                birthday: "1998-01-02",
+                zipCode: "77024",
+                avatar: "https://api.lorem.space/image/face?w=150&h=150&hash=" + dummy.id,
+                friends: [1 + dummy.id % 10, 1 + (dummy.id + 1) % 10, 1 + (dummy.id + 2) % 10],
+                posts: []
+            };
 
-        newUsers.push(user); 
+            newUsers.push(user); 
+        }
+
+        return newUsers;
     }
-   
-    return newUsers;
+    else{
+        return users.slice(0, 10);
+    }
+}
+
+const login = (loginState: LoginState, userId: number, numsOfUser: number) => {
+    if (userId >= numsOfUser || userId < 0){
+        return loginState
+    }
+
+    let newLoginState: LoginState = {...loginState}
+    newLoginState.isLogin = true
+    newLoginState.userId = userId
+
+    return newLoginState;
 }
 
 
@@ -103,14 +120,12 @@ function AppReducer(
     state: AppState = { // Need to assign value to initial state
         users: [], 
         loadDummies: false,
-        isPostLoaded: false,
+        // isPostLoaded: false,
         posts: [],
         loginState: {
-            state: 0,
             isLogin: false,
             userId: -1
-        },
-        test: "",
+        }
     }, 
         action: ActionTypes
 ){
@@ -118,20 +133,20 @@ function AppReducer(
         case REGISTER:
             return {
                 ...state,
-                loginState: {state: 1, isLogin: true, userId: state.users.length}, 
+                loginState: {isLogin: true, userId: state.users.length}, 
                 users: [...state.users, action.payload]
             }
         
         case LOGIN:
             return {
                 ...state,
-                loginState: {state: 1, isLogin: true, userId: action.payload}
+                loginState: login(state.loginState, action.payload, state.users.length)
             }
 
         case LOGOUT:
             return {
                 ...state,
-                loginState: {state:0, isLogin: false, userId: -1}
+                loginState: {isLogin: false, userId: -1}
             }
         
         case LOAD_DUMMY_USERS:
@@ -151,7 +166,7 @@ function AppReducer(
         case LOAD_POSTS:
             return {
                 ...state,
-                isPostLoaded: true,
+                // isPostLoaded: true,
                 users: getUsersPosts(action.payload, state.users),
                 posts: action.payload
             }
@@ -168,11 +183,10 @@ function AppReducer(
         //         loginState: getUserPost(state.posts, state.loginState)
         //     }
         
-        case TEST:
-            return {
-                ...state,
-                test: action.payload
-            }
+        // case TEST:
+        //     return {
+        //         ...state,
+        //     }
         
         default:
             return state
@@ -187,7 +201,7 @@ const persistConfig = {
   storage,
 }
 
-const persistedReducer = persistReducer(persistConfig, AppReducer)
+export const persistedReducer = persistReducer(persistConfig, AppReducer)
 
 export const store = configureStore({
   reducer: persistedReducer,

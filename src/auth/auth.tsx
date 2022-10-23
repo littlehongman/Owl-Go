@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppState, Post, User } from '../store/types';
 
 import { getPosts, loadDummyUsers, loadPosts } from '../store/actions';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 const Auth = () => {
     const loadDummies = useSelector((state: AppState) => state.loadDummies)
@@ -16,35 +16,55 @@ const Auth = () => {
         return new Date(new Date('2020/1/1').getTime() + Math.random() * (Date.now() - new Date('2020/1/1').getTime())).getTime()
     }
 
+    const transfromPosts = (res: AxiosResponse): Post[] => {
+        let posts: Post[] = []
+
+        res.data.forEach((item:any, idx:any) => {
+            let post: Post = {
+                userId: item['userId'],
+                id: item['id'],
+                title: item['title'],
+                body: item['body'],
+                img: "https://source.unsplash.com/random/640x360?sig=" + idx,
+                timestamp: getRandomTime()
+            } 
+
+            posts.push(post);
+            
+        });
+
+        return posts
+    }
+
     // Load Dummy Users
     useEffect(() => {
-        if (!loadDummies){
+        // if (!loadDummies){
             axios.get("https://jsonplaceholder.typicode.com/users").then(res => {
                 dispatch(loadDummyUsers(res['data']))
 
                 axios.get("https://jsonplaceholder.typicode.com/posts").then(res => {
-                    let posts: Post[] = []
+                    // let posts: Post[] = []
 
-                    res.data.forEach((item:any, idx:any) => {
-                        let post: Post = {
-                            userId: item['userId'],
-                            id: item['id'],
-                            title: item['title'],
-                            body: item['body'],
-                            img: "https://source.unsplash.com/random/640x360?sig=" + idx,
-                            timestamp: getRandomTime()
-                        } 
+                    // res.data.forEach((item:any, idx:any) => {
+                    //     let post: Post = {
+                    //         userId: item['userId'],
+                    //         id: item['id'],
+                    //         title: item['title'],
+                    //         body: item['body'],
+                    //         img: "https://source.unsplash.com/random/640x360?sig=" + idx,
+                    //         timestamp: getRandomTime()
+                    //     } 
 
-                        posts.push(post);
+                    //     posts.push(post);
                         
-                    });
+                    // });
             
-                    dispatch(loadPosts(posts)); 
+                    dispatch(loadPosts(transfromPosts(res))); 
                 })
             })
 
         
-        }
+        // }
         
        
     }, [])

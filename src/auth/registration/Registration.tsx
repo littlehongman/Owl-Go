@@ -23,11 +23,7 @@ const Register = () => {
     // React Hook Form
     const { register, handleSubmit, watch, getValues ,formState: { errors } } = useForm()
     const onSubmit = (data: any) => {
-        if(users.map((user) => user.username).includes(getValues('username'))){
-            toast.error("Duplicate Username", {duration: 1000})
-            return
-        }
-
+       
         dispatch(registerUser({
             id: newID,
             name: getValues('displayName'),
@@ -38,10 +34,19 @@ const Register = () => {
             birthday: getValues('birthday'),
             zipCode: getValues('zipcode'),
             avatar: "https://api.lorem.space/image/face?w=150&h=150&hash=" + newID,
-            friends: [1],
+            friends: [],
             posts: []
         }))    
     };
+
+    const checkExistedUser = (username: string) => {
+        if(users.map((user) => user.username).includes(username)){
+            //toast.error("Duplicate Username", {duration: 1000})
+            return false
+        }
+
+        return true
+    }
     
     useEffect(() => {
         if (loginState.isLogin) 
@@ -85,8 +90,8 @@ const Register = () => {
         return isAdult;
     }
 
-    // console.log(watch());
-    console.log(errors);
+    // console.log(watch('username'));
+    // console.log(errors);
     
     return (
         <div className="container w-10/12 mx-auto rounded-xl shadow border p-8 m-10 bg-white">
@@ -111,13 +116,17 @@ const Register = () => {
                                             type="text" 
                                             {...register("username", { 
                                                 required: true,
-                                                validate: (value) => /^[A-Za-z]/i.test(value) ,
+                                                validate: {
+                                                    format : (value) => /^[A-Za-z]/i.test(value),
+                                                    duplicate: (value) => checkExistedUser(value)
+                                                } ,
                                                 pattern: /^[A-Za-z0-9]{0,}/i
                                             })}
                                             className="relative block w-full appearance-none  rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                     />
                                     {errors?.username?.type === "required" && <span className="before::content-['']  text-sm text-red-600">Username required</span>}
-                                    {errors.username?.type === "validate" && <span className="before::content-['']  text-sm text-red-600">Username cannot start with a number</span>}
+                                    {errors.username?.type === "format" && <span className="before::content-['']  text-sm text-red-600">Username cannot start with a number</span>}
+                                    {errors.username?.type === "duplicate" && <span className="before::content-['']  text-sm text-red-600">Username existed</span>}
                                     {errors.username?.type === "pattern" && <span className="before::content-['']  text-sm text-red-600">Username can only contain letters and numbers</span>}
                                 </div>
                                 <div>

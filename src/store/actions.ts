@@ -22,7 +22,7 @@ export type ActionTypes =
     | {type: typeof LOAD_POSTS; payload: Post[]}
     | {type: typeof GET_POSTS;}
     | {type: typeof UPDATE_HEADLINE, payload: string}
-    | {type: typeof TEST; payload: string}
+    | {type: typeof TEST}
 
 
 export const registerUser = (newUser: User): ActionTypes => ({
@@ -63,8 +63,7 @@ export const updateHeadline = (headline: string): ActionTypes => ({
     payload: headline
 })
 
-export const changeTest = (newText: string): ActionTypes => ({
-    type: TEST,
-    payload: newText
+export const changeTest = (): ActionTypes => ({
+    type: TEST
 })
 
