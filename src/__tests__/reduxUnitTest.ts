@@ -915,7 +915,7 @@ test('fetch articles for current logged in user', async() => {
 
   expect(fetchPostState.users[userIdx].posts.length).toEqual(10);
 
-  fetchPostState = persistedReducer(fetchPostState, updatePosts(fetchPostState.users[userIdx].friends?? []))
+  fetchPostState = persistedReducer(fetchPostState, updatePosts(fetchPostState.users[userIdx].friends?? [], ""))
 
   expect(fetchPostState.displayPosts.length).toEqual(30);
 });
@@ -932,44 +932,63 @@ test("add articles when adding a follower", async() => {
 
   expect(fetchPostState.users[userIdx].posts.length).toEqual(10);
 
-  fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends))
+  fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends, ""))
 
   expect(fetchPostState.displayPosts.length).toEqual(30);
 
   userFriends.push(5);
-  fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends));
+  fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends, ""));
   expect(fetchPostState.displayPosts.length).toEqual(40);
 });
 
 
 test("add articles when adding a follower", async() => {
-  mockedAxios.get.mockResolvedValueOnce({ data: posts });
-  let response = await fetchPosts();
-  let userIdx = 0;
-  let userFriends = [2,3,4];
+    mockedAxios.get.mockResolvedValueOnce({ data: posts });
+    let response = await fetchPosts();
+    let userIdx = 0;
+    let userFriends = [2,3,4];
 
-  let initState = persistedReducer(undefined, loadDummyUsers(users))
-  let loginState = persistedReducer(initState, login(userIdx));
-  let fetchPostState = persistedReducer(loginState, loadPosts(response))
+    let initState = persistedReducer(undefined, loadDummyUsers(users))
+    let loginState = persistedReducer(initState, login(userIdx));
+    let fetchPostState = persistedReducer(loginState, loadPosts(response))
 
-  expect(fetchPostState.users[userIdx].posts.length).toEqual(10);
+    expect(fetchPostState.users[userIdx].posts.length).toEqual(10);
 
-  fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends))
+    fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends, ""))
 
-  expect(fetchPostState.displayPosts.length).toEqual(30);
+    expect(fetchPostState.displayPosts.length).toEqual(30);
 
-  userFriends.pop();
-  fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends));
-  expect(fetchPostState.displayPosts.length).toEqual(20);
+    userFriends.pop();
+    fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends, ""));
+    expect(fetchPostState.displayPosts.length).toEqual(20);
 });
 
+test("should fetch subset of articles for current logged in user given search keyword", async() => {
+    mockedAxios.get.mockResolvedValueOnce({ data: posts });
+    let response = await fetchPosts();
+    let userIdx = 0;
+    let userFriends = [2,3,4];
+
+    let initState = persistedReducer(undefined, loadDummyUsers(users))
+    let loginState = persistedReducer(initState, login(userIdx));
+    let fetchPostState = persistedReducer(loginState, loadPosts(response))
+
+    fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends, ""))
+    expect(fetchPostState.displayPosts.length).toEqual(30);
+
+    fetchPostState = persistedReducer(fetchPostState, updatePosts(userFriends, "Karianne"));
+    expect(fetchPostState.displayPosts.length).toEqual(10);
+});
+
+
+
 test("fetch the logged in user\'s profile username", () => {
-  let userIdx = 0;
+    let userIdx = 0;
 
-  let initState = persistedReducer(undefined, loadDummyUsers(users))
-  let loginState = persistedReducer(initState, login(userIdx));
+    let initState = persistedReducer(undefined, loadDummyUsers(users))
+    let loginState = persistedReducer(initState, login(userIdx));
 
-  expect(loginState.users[userIdx].username).toEqual("Bret"); 
+    expect(loginState.users[userIdx].username).toEqual("Bret"); 
 
 });
 

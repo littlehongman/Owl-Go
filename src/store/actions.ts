@@ -23,7 +23,7 @@ export type ActionTypes =
     | {type: typeof LOAD_DUMMY_USERS; payload: DummyUser[]}
     | {type: typeof UPDATE_PROFILE; payload: User}
     | {type: typeof LOAD_POSTS; payload: AxiosResponse}
-    | {type: typeof UPDATE_POSTS; payload: number[]}
+    | {type: typeof UPDATE_POSTS; friends: number[], keyword: string}
     | {type: typeof GET_POSTS;}
     | {type: typeof UPDATE_HEADLINE, payload: string}
     | {type: typeof TEST}
@@ -58,9 +58,10 @@ export const loadPosts = (posts: AxiosResponse): ActionTypes => ({
     payload: posts
 })
 
-export const updatePosts = (friends: number[]): ActionTypes => ({
+export const updatePosts = (friends: number[], keyword: string): ActionTypes => ({
     type: UPDATE_POSTS,
-    payload: friends
+    friends: friends,
+    keyword: keyword
 })
 
 export const getPosts = (): ActionTypes => ({

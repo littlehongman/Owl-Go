@@ -122,6 +122,14 @@ const updateHeadline = (headline: string, users: User[], userId: number): User[]
     return newUsers;
 }
 
+// helper function
+const searchFilter = (content: string, keyword:string): boolean => { 
+    if(content.toLowerCase().includes(keyword.toLowerCase().trim()))
+        return true;
+    
+    return false
+}
+
 // const initialLoginState : LoginState = {
 //     isLogin: false,
 //     user: null
@@ -190,11 +198,22 @@ function AppReducer(
             }
         
         case UPDATE_POSTS:
-            let userFriends = action.payload
+            let userFriends = action.friends;
+            let keyword = action.keyword;
+            let currentPosts: Post[] = []
+            let userNames: string[] = state.users.map((user) => user.username);
 
+            if (userFriends.length > 0){
+                currentPosts = state.posts.filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp)
+            }
+
+            if (keyword !== ""){
+                currentPosts = currentPosts.filter((post) => searchFilter(post.body, keyword) || searchFilter(userNames[post.userId - 1], keyword))
+            }
+            
             return {
                 ...state,
-                displayPosts:  state.posts.filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp)
+                displayPosts:  currentPosts
             }
 
         case UPDATE_HEADLINE:
@@ -207,11 +226,6 @@ function AppReducer(
         //     return {
         //         ...state,
         //         loginState: getUserPost(state.posts, state.loginState)
-        //     }
-        
-        // case TEST:
-        //     return {
-        //         ...state,
         //     }
         
         default:

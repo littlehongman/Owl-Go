@@ -52,9 +52,16 @@ const Main = () => {
 
     useEffect(() => {
         //console.log(userFriends);
-        dispatch(updatePosts(userFriends))
+        dispatch(updatePosts(userFriends, ""))
         //setFriendPosts([...posts].filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp))
     }, [userFriends])
+
+    useEffect(() => {
+        //console.log(userFriends);
+        dispatch(updatePosts(userFriends, keyword))
+        //setFriendPosts([...posts].filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp))
+    }, [keyword])
+
 
     return (
         <>
@@ -66,7 +73,7 @@ const Main = () => {
                 </div>
                 <div className="col-span-4">
                     {/* <ShareBox/> */}
-                    {/* <SearchBar setKeyword={setKeyword}/> */}
+                    <SearchBar setKeyword={setKeyword}/>
                     <ShareBox userId={user?.id} userPosts={userPosts} setUserPosts={setUserPosts} />
                     {(displayPosts.length >= 0) && <Posts userId={user?.id} userData={userData} userPosts={displayPosts} keyword={keyword}/>}
                     {/* {(user?.posts.length !== 0) && <Posts userId={user?.id} userData={userData} userPosts={userPosts} keyword={keyword}/>} */}
