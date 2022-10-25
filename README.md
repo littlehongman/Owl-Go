@@ -1,5 +1,5 @@
 netid: hw75 <br/>
-frontend: https://owlgo.surge.sh
+frontend: https://owlgo-v2.surge.sh
 
 **The profile and logout button will appear when click the avatar on the navbar**
 
