@@ -1,6 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 import { useFilePicker } from "use-file-picker";
+import { addPost } from "../../store/actions";
 import { Post } from "../../store/types";
 
 
@@ -11,6 +13,7 @@ interface UserProps {
 }
 
 const ShareBox = ({userId, userPosts, setUserPosts}: UserProps) => {
+    //const dispatch = useDispatch()
 
     //const inputRef = useRef<HTMLTextAreaElement>(null);
     const [message, setMessage] = useState('');
@@ -42,6 +45,8 @@ const ShareBox = ({userId, userPosts, setUserPosts}: UserProps) => {
                 //post.img = filesContent[0].name // TO BE MODIFIED
 
             setUserPosts([post, ...userPosts]);
+            // dispatch(addPost(post));
+            // setNewPost(message);
             toast.success("Successful Post", {duration: 1000})
         }
         else{

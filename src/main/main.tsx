@@ -28,12 +28,8 @@ const Main = () => {
     const [userFriends, setUserFriends] = useState<number[]>([...user?.friends?? []])
 
     // Posts
-    const posts = useSelector((state: AppState) => state.posts)
-    const [userPosts, setUserPosts] = useState<Post[]>([...user?.posts?? []])
-    // const [randomPosts, setRandomPosts] = useState<Post[]>([...posts].sort(() => 0.5 - Math.random()).slice(0, 10).sort((a, b) => b.timestamp - a.timestamp))
-    const [friendPosts, setFriendPosts] = useState<Post[]>([...posts].filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp))
-    
-    const displayPosts = useSelector((state: AppState) => state.displayPosts)
+    const displayPosts = useSelector((state: AppState) => state.displayPosts);
+    const [mainPosts, setMainPosts] = useState<Post[]>(displayPosts)
 
     // Search Bar
     const [keyword, setKeyword] = useState<string>("")
@@ -43,24 +39,21 @@ const Main = () => {
     const isTabletOrMobile = useMediaQuery({ query: '(max-width: 864px)' })
 
     useEffect(() => {
-        // console.log(user?.posts.length);
-        // console.log(user?.posts)
         if (user === null){
             navigate("../")
-        }    
+        } 
+        // dispatch(updatePosts(userFriends, keyword)); // Load for first time
     }, [])
 
     useEffect(() => {
-        //console.log(userFriends);
-        dispatch(updatePosts(userFriends, ""))
-        //setFriendPosts([...posts].filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp))
-    }, [userFriends])
-
+        setMainPosts(displayPosts);
+    }, [displayPosts])
+    
+   
     useEffect(() => {
-        //console.log(userFriends);
-        dispatch(updatePosts(userFriends, keyword))
-        //setFriendPosts([...posts].filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp))
-    }, [keyword])
+        dispatch(updatePosts(userFriends, keyword));
+        
+    }, [keyword, userFriends])
 
 
     return (
@@ -74,8 +67,9 @@ const Main = () => {
                 <div className="col-span-4">
                     {/* <ShareBox/> */}
                     <SearchBar setKeyword={setKeyword}/>
-                    <ShareBox userId={user?.id} userPosts={userPosts} setUserPosts={setUserPosts} />
-                    {(displayPosts.length >= 0) && <Posts userId={user?.id} userData={userData} userPosts={displayPosts} keyword={keyword}/>}
+                    <ShareBox userId={user?.id} userPosts={mainPosts} setUserPosts={setMainPosts} />
+                    {/* {(mainPosts.length == 0) && <Posts userId={user?.id} userData={userData} userPosts={displayPosts} keyword={keyword}/>} */}
+                    {(mainPosts.length > 0) && <Posts userId={user?.id} userData={userData} userPosts={mainPosts} keyword={keyword}/>}
                     {/* {(user?.posts.length !== 0) && <Posts userId={user?.id} userData={userData} userPosts={userPosts} keyword={keyword}/>} */}
                     {/* {(user?.posts.length === 0) && <Posts userId={user?.id} userData={userData} userPosts={randomPosts} keyword={keyword}/>} */}
                 </div>
@@ -92,10 +86,10 @@ const Main = () => {
             <div>
                 <Personal username={user?.username} userAvatar={user?.avatar} userHeadline={user?.headline?? ""}/>
                 <Friends username={user?.username} userFriends={userFriends} setUserFriends={setUserFriends}/>
-                {/* <SearchBar setKeyword={setKeyword}/> */}
-                <ShareBox userId={user?.id} userPosts={userPosts} setUserPosts={setUserPosts} />
-                {(user?.posts.length !== 0) && <Posts userId={user?.id} userData={userData} userPosts={userPosts} keyword={keyword}/>}
-                {/* {(user?.posts.length === 0) && <Posts userId={user?.id} userData={userData} userPosts={randomPosts} keyword={keyword}/>} */}
+               
+                <ShareBox userId={user?.id} userPosts={mainPosts} setUserPosts={setMainPosts} />
+                {(mainPosts.length > 0) && <Posts userId={user?.id} userData={userData} userPosts={mainPosts} keyword={keyword}/>}
+               
             </div>
         }
         </>

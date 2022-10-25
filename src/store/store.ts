@@ -1,7 +1,7 @@
 
 import { configureStore } from '@reduxjs/toolkit'
 import { User, Post, LoginState, AppState, DummyUser, LoginPayload } from "./types"
-import { ActionTypes, LOAD_POSTS, LOAD_DUMMY_USERS, REGISTER, TEST, LOGIN, LOGOUT, UPDATE_PROFILE, GET_POSTS, UPDATE_HEADLINE, UPDATE_POSTS } from "./actions"
+import { ActionTypes, LOAD_POSTS, LOAD_DUMMY_USERS, REGISTER, TEST, LOGIN, LOGOUT, UPDATE_PROFILE, GET_POSTS, UPDATE_HEADLINE, UPDATE_POSTS, ADD_POST } from "./actions"
 
 // Redux Persist
 import storage from 'redux-persist/lib/storage';
@@ -110,7 +110,7 @@ const getUsersPosts = (posts: Post[], users: User[]): User[] => {
     for(const post of sortedPosts){
         newUsers[post.userId - 1].posts.push(post)
     }
-    console.log(newUsers);
+    //console.log(newUsers);
     
     return newUsers;
 }
@@ -180,7 +180,6 @@ function AppReducer(
         case UPDATE_PROFILE:
             return {
                 ...state,
-                //loginState: {state:1, isLogin: true, user: action.payload},
                 users: updateProfile(state.users, action.payload)
             }
         
@@ -194,17 +193,18 @@ function AppReducer(
                 // isPostLoaded: true,
                 users: getUsersPosts(resToPosts, state.users),
                 posts: resToPosts,
+                displayPost: resToPosts
                 //displayPosts:  resToPosts.filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp)
             }
         
         case UPDATE_POSTS:
-            let userFriends = action.friends;
+            let userNames: string[] = state.users.map((user) => user.username);
+            let userIds = [state.loginState.userId + 1,...action.friends]; // need to also include user's posts
             let keyword = action.keyword;
             let currentPosts: Post[] = []
-            let userNames: string[] = state.users.map((user) => user.username);
 
-            if (userFriends.length > 0){
-                currentPosts = state.posts.filter((post) => userFriends.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp)
+            if (userIds.length > 0){
+                currentPosts = state.posts.filter((post) => userIds.includes(post.userId)).sort((a, b) => b.timestamp - a.timestamp)
             }
 
             if (keyword !== ""){
@@ -214,6 +214,12 @@ function AppReducer(
             return {
                 ...state,
                 displayPosts:  currentPosts
+            }
+
+        case ADD_POST:
+            return {
+                ...state,
+                posts: [action.payload, ...state.posts]
             }
 
         case UPDATE_HEADLINE:

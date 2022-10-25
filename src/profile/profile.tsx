@@ -114,17 +114,18 @@ const Profile = () => {
                                     <input id="username" 
                                             type="text" 
                                             {...register("username", { 
-                                                required: true,
+                                                
                                                 validate: (value) => /^[A-Za-z]/i.test(value) ,
                                                 pattern: /^[A-Za-z0-9]{0,}/i
                                             })}
                                             defaultValue={user?.username}
+                                            value={user?.username}
                                             disabled
                                             className="bg-slate-300 relative block w-full appearance-none  rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                     />
-                                    {errors?.username?.type === "required" && <span className="before::content-['']  text-sm text-red-600">Username required</span>}
+                                    {/* {errors?.username?.type === "required" && <span className="before::content-['']  text-sm text-red-600">Username required</span>}
                                     {errors.username?.type === "validate" && <span className="before::content-['']  text-sm text-red-600">Username cannot start with a number</span>}
-                                    {errors.username?.type === "pattern" && <span className="before::content-['']  text-sm text-red-600">Username can only contain letters and numbers</span>}
+                                    {errors.username?.type === "pattern" && <span className="before::content-['']  text-sm text-red-600">Username can only contain letters and numbers</span>} */}
                                 </div>
                                 <div>
                                     <span className="mt-2 text-center text-sm "> Display Name </span>

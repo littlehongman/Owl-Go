@@ -29,9 +29,9 @@ const Personal = ({username, userAvatar, userHeadline}: UserProps) => {
 
 
     return (
-        <div className="relative max-w-md mt-10 mx-auto md:max-w-2xl min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded-xl">
+        <div className="w-full mt-10 mx-auto max-w-md bg-white rounded-lg border shadow-md dark:bg-gray-800 dark:border-gray-700">
             <form onSubmit={handleClick}>
-                <div className="px-6">
+                <div className="px-2">
                     <div className="flex flex-wrap justify-center">
                         <div className="w-full text-center mt-4">
                             <div className="w-full flex justify-center">
@@ -49,7 +49,7 @@ const Personal = ({username, userAvatar, userHeadline}: UserProps) => {
                                     {/* <button type="submit" onClick={() => handleClick()} className="mt-6 relative flex w-full justify-center w-full rounded  px-6 py-2.5 bg-gray-600 text-white font-medium text-xs leading-tight uppercase hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-0 active:bg-blue-800 transition duration-150 ease-in-out">
                                         Update
                                     </button> */}
-                                    <button type="submit" className="inline-block mt-6 px-6 py-2.5 bg-gray-400 text-gray-700 font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-gray-300 hover:shadow-lg focus:bg-gray-300 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out">
+                                    <button type="submit" className="mt-4 inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-gray-300 hover:shadow-lg focus:bg-gray-300 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out">
                                         Update
                                     </button>
                                 </div>

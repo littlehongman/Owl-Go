@@ -9,6 +9,7 @@ export const UPDATE_PROFILE = "UPDATE_PROFILE"
 export const LOAD_POSTS = "LOAD_POSTS"
 export const GET_POSTS = "GET_POSTS"
 export const UPDATE_POSTS = "UPDATE_POSTS"
+export const ADD_POST = "ADD_POST"
 export const UPDATE_HEADLINE = "UPDATE_HEADLINE"
 
 export const TEST = "TEST"
@@ -24,6 +25,7 @@ export type ActionTypes =
     | {type: typeof UPDATE_PROFILE; payload: User}
     | {type: typeof LOAD_POSTS; payload: AxiosResponse}
     | {type: typeof UPDATE_POSTS; friends: number[], keyword: string}
+    | {type: typeof ADD_POST; payload: Post}
     | {type: typeof GET_POSTS;}
     | {type: typeof UPDATE_HEADLINE, payload: string}
     | {type: typeof TEST}
@@ -62,6 +64,11 @@ export const updatePosts = (friends: number[], keyword: string): ActionTypes => 
     type: UPDATE_POSTS,
     friends: friends,
     keyword: keyword
+})
+
+export const addPost = (post: Post): ActionTypes => ({
+    type: ADD_POST,
+    payload: post
 })
 
 export const getPosts = (): ActionTypes => ({
