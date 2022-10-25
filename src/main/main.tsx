@@ -30,6 +30,7 @@ const Main = () => {
     // Posts
     const displayPosts = useSelector((state: AppState) => state.displayPosts);
     const [mainPosts, setMainPosts] = useState<Post[]>(displayPosts)
+    const [newPost, setNewPost] = useState<string>("")
 
     // Search Bar
     const [keyword, setKeyword] = useState<string>("")
@@ -53,7 +54,7 @@ const Main = () => {
     useEffect(() => {
         dispatch(updatePosts(userFriends, keyword));
         
-    }, [keyword, userFriends])
+    }, [keyword, userFriends, newPost])
 
 
     return (
@@ -67,9 +68,10 @@ const Main = () => {
                 <div className="col-span-4">
                     {/* <ShareBox/> */}
                     <SearchBar setKeyword={setKeyword}/>
-                    <ShareBox userId={user?.id} userPosts={mainPosts} setUserPosts={setMainPosts} />
+                    {/* <ShareBox userId={user?.id} userPosts={mainPosts} setUserPosts={setMainPosts} /> */}
+                    <ShareBox userId={user?.id} setNewPost={setNewPost} />
                     {/* {(mainPosts.length == 0) && <Posts userId={user?.id} userData={userData} userPosts={displayPosts} keyword={keyword}/>} */}
-                    {(mainPosts.length > 0) && <Posts userId={user?.id} userData={userData} userPosts={mainPosts} keyword={keyword}/>}
+                    {<Posts userId={user?.id} userData={userData} userPosts={displayPosts} keyword={keyword}/>}
                     {/* {(user?.posts.length !== 0) && <Posts userId={user?.id} userData={userData} userPosts={userPosts} keyword={keyword}/>} */}
                     {/* {(user?.posts.length === 0) && <Posts userId={user?.id} userData={userData} userPosts={randomPosts} keyword={keyword}/>} */}
                 </div>
@@ -87,7 +89,8 @@ const Main = () => {
                 <Personal username={user?.username} userAvatar={user?.avatar} userHeadline={user?.headline?? ""}/>
                 <Friends username={user?.username} userFriends={userFriends} setUserFriends={setUserFriends}/>
                
-                <ShareBox userId={user?.id} userPosts={mainPosts} setUserPosts={setMainPosts} />
+                {/* <ShareBox userId={user?.id} userPosts={mainPosts} setUserPosts={setMainPosts} /> */}
+                {/* <ShareBox userId={user?.id} userPosts={mainPosts}/> */}
                 {(mainPosts.length > 0) && <Posts userId={user?.id} userData={userData} userPosts={mainPosts} keyword={keyword}/>}
                
             </div>

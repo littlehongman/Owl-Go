@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1666669235654" clover="3.2.0">
-  <project timestamp="1666669235654" name="All files">
+<coverage generated="1666715281506" clover="3.2.0">
+  <project timestamp="1666715281506" name="All files">
     <metrics statements="89" coveredstatements="86" conditionals="25" coveredconditionals="21" methods="26" coveredmethods="22" elements="140" coveredelements="129" complexity="0" loc="89" ncloc="89" packages="1" files="3" classes="3"/>
     <file name="actions.ts" path="/Users/littlehongman/Desktop/Rice/531/hw5-littlehongman/src/store/actions.ts">
       <metrics statements="22" coveredstatements="22" conditionals="0" coveredconditionals="0" methods="11" coveredmethods="7"/>
@@ -58,7 +58,7 @@
       <line num="89" count="1" type="stmt"/>
       <line num="102" count="1" type="stmt"/>
       <line num="103" count="4" type="stmt"/>
-      <line num="104" count="2144" type="stmt"/>
+      <line num="104" count="2134" type="stmt"/>
       <line num="106" count="4" type="stmt"/>
       <line num="107" count="40" type="stmt"/>
       <line num="110" count="4" type="stmt"/>

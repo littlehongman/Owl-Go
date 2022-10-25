@@ -8,12 +8,13 @@ import { Post } from "../../store/types";
 
 interface UserProps {
     userId?: number;
-    userPosts: Post[];
-    setUserPosts: React.Dispatch<React.SetStateAction<Post[]>>
+    // userPosts: Post[];
+    // setUserPosts: React.Dispatch<React.SetStateAction<Post[]>>
+    setNewPost: React.Dispatch<React.SetStateAction<string>>
 }
 
-const ShareBox = ({userId, userPosts, setUserPosts}: UserProps) => {
-    //const dispatch = useDispatch()
+const ShareBox = ({userId, setNewPost}: UserProps) => {
+    const dispatch = useDispatch()
 
     //const inputRef = useRef<HTMLTextAreaElement>(null);
     const [message, setMessage] = useState('');
@@ -44,9 +45,9 @@ const ShareBox = ({userId, userPosts, setUserPosts}: UserProps) => {
                 
                 //post.img = filesContent[0].name // TO BE MODIFIED
 
-            setUserPosts([post, ...userPosts]);
-            // dispatch(addPost(post));
-            // setNewPost(message);
+            //setUserPosts([post, ...userPosts]);
+            dispatch(addPost(post));
+            setNewPost(message);
             toast.success("Successful Post", {duration: 1000})
         }
         else{
