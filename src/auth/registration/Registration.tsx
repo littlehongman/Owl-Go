@@ -5,7 +5,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useForm} from "react-hook-form";
 import { registerUser } from '../../store/actions';
 import { AppState } from '../../store/types';
+import { BASE_URL } from '../../util/secrets';
 import toast from 'react-hot-toast';
+import axios, { AxiosError, AxiosResponse } from "axios";
+axios.defaults.withCredentials = true;
 
 // import Form from '../components/Form'
 
@@ -24,20 +27,39 @@ const Register = () => {
     const { register, handleSubmit, watch, getValues ,formState: { errors } } = useForm()
     const onSubmit = (data: any) => {
        
-        dispatch(registerUser({
-            id: newID,
-            name: getValues('displayName'),
+        // dispatch(registerUser({
+        //     id: newID,
+        //     name: getValues('displayName'),
+        //     username: getValues('username'),
+        //     password: getValues('password'),
+        //     email: getValues('email'),
+        //     phone: getValues('phone'),
+        //     birthday: getValues('birthday'),
+        //     zipCode: getValues('zipcode'),
+        //     avatar: "https://api.lorem.space/image/face?w=150&h=150&hash=" + newID,
+        //     friends: [],
+        //     posts: []
+        // }))   
+        axios.post(`${BASE_URL}/register`, {
             username: getValues('username'),
             password: getValues('password'),
+            name: getValues('displayName'),
             email: getValues('email'),
             phone: getValues('phone'),
-            birthday: getValues('birthday'),
+            birthday: new Date(getValues('birthday')).getTime(),
             zipCode: getValues('zipcode'),
-            avatar: "https://api.lorem.space/image/face?w=150&h=150&hash=" + newID,
-            friends: [],
-            posts: []
-        }))    
-    };
+        }).then((res: AxiosResponse) => {
+            
+
+        }).catch((err: AxiosError) => {
+            if (err.response!.status === 409) {
+                toast.error("Username already taken")
+            } else {
+              // Handle else
+            }
+        });
+    
+    }
 
     const checkExistedUser = (username: string) => {
         if(users.map((user) => user.username).includes(username)){
@@ -118,7 +140,7 @@ const Register = () => {
                                                 required: true,
                                                 validate: {
                                                     format : (value) => /^[A-Za-z]/i.test(value),
-                                                    duplicate: (value) => checkExistedUser(value)
+                                                    //duplicate: (value) => checkExistedUser(value)
                                                 } ,
                                                 pattern: /^[A-Za-z0-9]{0,}/i
                                             })}

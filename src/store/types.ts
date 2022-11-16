@@ -62,3 +62,12 @@ export interface AppState {
     displayPosts: Post[]
 }
 
+export interface s3IConfig{
+    bucketName:  string,
+    // dirName: 'directory-name',      /* Optional */
+    region: string,
+    accessKeyId: string,
+    secretAccessKey: string,
+    s3Url: string
+}
+

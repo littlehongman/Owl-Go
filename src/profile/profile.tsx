@@ -27,7 +27,6 @@ const Profile = () => {
     const { register, handleSubmit, watch, getValues ,formState: { errors } } = useForm<User>()
     // const onSubmit: SubmitHandler<User> = data => console.log(data);
     const onSubmit = (data: User) => {
-        console.log(data);
         toast.success("Profile Updated", {duration: 1000});
         //dispatch(updateProfile(data));
     };
@@ -118,7 +117,7 @@ const Profile = () => {
                                                 validate: (value) => /^[A-Za-z]/i.test(value) ,
                                                 pattern: /^[A-Za-z0-9]{0,}/i
                                             })}
-                                            defaultValue={user?.username}
+                                            // defaultValue={user?.username}
                                             value={user?.username}
                                             disabled
                                             className="bg-slate-300 relative block w-full appearance-none  rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"

@@ -17,8 +17,39 @@ import Register from "./auth/registration/Registration";
 // UI elements
 import {Toaster} from "react-hot-toast";
 import { ChakraProvider } from '@chakra-ui/react'
+import { useEffect } from "react";
+
+// Backend
+import axios from "axios";
+axios.defaults.withCredentials = true;
+
 
 export default function App() {
+  useEffect(() => {
+    // if (!loadDummies){
+      // axios.get(process.env.BACKEND_URL!).then(res => {
+      //     console.log(res);
+      // })
+
+      // axios.post("http://localhost:4000/register", {
+      //   username: 'Fink',
+      //   password: '123'
+      // }).then(res => {
+      //   console.log(res);
+      //   axios.post("http://localhost:4000/login", {
+      //       username: 'Fink',
+      //       password: '123'
+      //     }).then(res => {
+      //       console.log(res);
+    
+      //       axios.get("http://localhost:4000/articles").then(res => {
+      //         console.log(res.data);
+      //       })
+      //     })
+
+        
+      // })
+  }, [])
   
 
   return (

@@ -6,6 +6,9 @@ import { addPost } from "../../store/actions";
 import { Post } from "../../store/types";
 import { MdOutlineClear } from "react-icons/md"
 
+import ReactS3Client from 'react-aws-s3-typescript';
+import { s3Config } from '../../store/s3Config';
+
 
 interface UserProps {
     userId?: number;
@@ -20,12 +23,12 @@ const ShareBox = ({userId, setNewPost}: UserProps) => {
     //const inputRef = useRef<HTMLTextAreaElement>(null);
     const [message, setMessage] = useState('');
 
-    const [openFileSelector, { filesContent, loading }] = useFilePicker({
+    const [openFileSelector, { filesContent, plainFiles, loading }] = useFilePicker({
         accept: ['.png', '.jpg'],
     });
 
-    const handleClick = ():void => {
-        console.log(filesContent);
+    const handleClick = async() => {
+        console.log(plainFiles);
         // e.preventDefault();
         
         if (message.trim() !== "" && userId){
@@ -39,6 +42,8 @@ const ShareBox = ({userId, setNewPost}: UserProps) => {
                 img: "",
                 timestamp: Date.now()
             }
+
+            const res = await uploadFile();
 
             if (filesContent.length > 0){
                 post.img = "https://source.unsplash.com/random/640x360?sig=" + 100 + Math.floor(Math.random() * 100)
@@ -58,6 +63,23 @@ const ShareBox = ({userId, setNewPost}: UserProps) => {
             
             //setHeadline(inputRef.current?.value);
     };
+
+
+    const uploadFile = async() => {
+        const s3 = new ReactS3Client(s3Config);
+
+        try {
+            const image = plainFiles[0];
+            const res = await s3.uploadFile(image);
+            
+            
+            return res;
+        } catch (exception) {
+            console.log(exception);
+            /* handle the exception */
+        }
+
+    }
 
     return (
         <div className="container mx-auto rounded-xl shadow border m-4 bg-white">
