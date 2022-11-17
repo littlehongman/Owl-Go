@@ -3,9 +3,9 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Button } from "@material-tailwind/react";
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { logout } from '../store/actions';
+// import { logout } from '../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppState } from '../store/types';
+// import { AppState } from '../store/types';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 function classNames(...classes: any[]) {
@@ -15,15 +15,15 @@ function classNames(...classes: any[]) {
 
 const Header = () => {
     const dispatch = useDispatch();
-    const user = useSelector((state: AppState) => {
-        if(state.loginState.isLogin) {
-            return state.users[state.loginState.userId]
-        }
-        return null;
-    });
+    // const user = useSelector((state: AppState) => {
+    //     if(state.loginState.isLogin) {
+    //         return state.users[state.loginState.userId]
+    //     }
+    //     return null;
+    // });
     
-    const location = useLocation();
-    const navigate = useNavigate();
+    // const location = useLocation();
+    // const navigate = useNavigate();
 
     // const logoutUser = () => {
     //     dispatch(logout())
@@ -35,7 +35,7 @@ const Header = () => {
 
     const dropdownOptions: any[] = [
         { name: 'Your Profile', href: '../profile', action: null},
-        { name: 'Logout', href: '../', action: logout()}
+        // { name: 'Logout', href: '../', action: logout()}
     ]
     
     return (
@@ -69,7 +69,7 @@ const Header = () => {
                                 />
                             </div>
                             <div className="hidden sm:ml-6 sm:block">
-                            {user &&
+                            {false &&
                             <div className="flex space-x-4">
                                 {navigation.map((item) => (
                                 <a
@@ -98,16 +98,16 @@ const Header = () => {
                             </button> */}
 
                             {/* Profile dropdown */}
-                            {user && 
+                            {false&& 
                                 
                                 <Menu as="div" className="relative ml-3">
                                 <div className="flex">
-                                    <h6 className="pt-1 pr-2 font-bold text-white">{user.username}</h6>
+                                    {/* <h6 className="pt-1 pr-2 font-bold text-white">{user.username}</h6> */}
                                     <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                     <span className="sr-only">Open user menu</span>
                                     <img
                                         className="h-8 w-8 rounded-full"
-                                        src={user?.avatar}
+                                        // src={user?.avatar}
                                         alt=""
                                     />
                                     </Menu.Button>
@@ -140,17 +140,17 @@ const Header = () => {
                                 </Transition>
                                 </Menu>
                             }
-                            {!user &&
+                            {!false &&
                                 <div>
-                                    {location.pathname === '/register' && <Button onClick={() => navigate('../')} color="white">Login</Button> }
-                                    {location.pathname === '/' && <Button onClick={() => navigate('/register')} color="white">  Register </Button>}
+                                    {/* {location.pathname === '/register' && <Button onClick={() => navigate('../')} color="white">Login</Button> } */}
+                                    {/* {location.pathname === '/' && <Button onClick={() => navigate('/register')} color="white">  Register </Button>} */}
                                 </div>
                             }   
                         </div>
                     </div>
                 </div>
                 
-                {user &&
+                {false &&
                     <Disclosure.Panel className="sm:hidden">
                         <div className="space-y-1 px-2 pt-2 pb-3">
                         {navigation.map((item) => (

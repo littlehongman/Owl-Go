@@ -14,22 +14,22 @@ export interface User {
     headline?:string
 }
 
-export interface DummyUser {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
-    address: {
-        street: string;
-    }
-    phone: string;
-    website: string;
-    company: any | null;
-}
+// export interface DummyUser {
+//     id: number;
+//     name: string;
+//     username: string;
+//     email: string;
+//     address: {
+//         street: string;
+//     }
+//     phone: string;
+//     website: string;
+//     company: any | null;
+// }
 
 export interface Post {
     id: number;
-    userId: number;
+    username: string;
     title: string;
     body: string;
     img: string;
@@ -44,8 +44,8 @@ export interface Post {
 // 4: username duplicate
 
 export interface LoginState{
-    isLogin: boolean;
-    userId: number
+    // isLogin: boolean;
+    username: string | null
 }
 
 export interface LoginPayload {
@@ -54,12 +54,13 @@ export interface LoginPayload {
 }
 
 export interface AppState {
-    users: User[];
-    loadDummies: boolean;
-    // isPostLoaded: boolean;
-    posts: Post[];
-    loginState: LoginState;
-    displayPosts: Post[]
+    username: string | null
+    // users: User[];
+    // // loadDummies: boolean;
+    // // // isPostLoaded: boolean;
+    // // posts: Post[];
+    // // loginState: LoginState;
+    // // displayPosts: Post[]
 }
 
 export interface s3IConfig{

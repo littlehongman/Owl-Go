@@ -1,86 +1,34 @@
-import { AxiosResponse } from "axios";
-import { User, Post, DummyUser, LoginPayload } from "./types";
+import { User, Post, LoginPayload } from "./types";
 
 export const REGISTER = "REGISTER"
+export const RELOGIN = "RELOGIN"
 export const LOGIN = "LOGIN"
 export const LOGOUT = "LOGOUT"
-export const LOAD_DUMMY_USERS = "LOAD_DUMMY_USERS"
-export const UPDATE_PROFILE = "UPDATE_PROFILE"
-export const LOAD_POSTS = "LOAD_POSTS"
-export const GET_POSTS = "GET_POSTS"
-export const UPDATE_POSTS = "UPDATE_POSTS"
-export const ADD_POST = "ADD_POST"
-export const UPDATE_HEADLINE = "UPDATE_HEADLINE"
-
-export const TEST = "TEST"
 
 // export const ADDPOST = "POST"
 
 
 export type ActionTypes = 
-    | {type: typeof REGISTER; payload: User}
-    | {type: typeof LOGIN; payload: number}
+    // | {type: typeof REGISTER; payload: User}
+    | {type: typeof RELOGIN}
+    | {type: typeof LOGIN; payload: string}
     | {type: typeof LOGOUT}
-    | {type: typeof LOAD_DUMMY_USERS; payload: DummyUser[]}
-    | {type: typeof UPDATE_PROFILE; payload: User}
-    | {type: typeof LOAD_POSTS; payload: AxiosResponse}
-    | {type: typeof UPDATE_POSTS; friends: number[], keyword: string}
-    | {type: typeof ADD_POST; payload: Post}
-    | {type: typeof GET_POSTS;}
-    | {type: typeof UPDATE_HEADLINE, payload: string}
-    | {type: typeof TEST}
 
 
-export const registerUser = (newUser: User): ActionTypes => ({
-    type: REGISTER,
-    payload: newUser
-}) 
+// export const registerUser = (newUser: User): ActionTypes => ({
+//     type: REGISTER,
+//     payload: newUser
+// }) 
 
-export const login = (userId: number): ActionTypes => ({
+export const login = (username: string): ActionTypes => ({
     type: LOGIN,
-    payload: userId
+    payload: username
 })
 
 export const logout = (): ActionTypes => ({
     type:  LOGOUT
 })
 
-export const loadDummyUsers = (users: DummyUser[]): ActionTypes => ({
-    type: LOAD_DUMMY_USERS,
-    payload: users
+export const relogin = (): ActionTypes => ({
+    type: RELOGIN
 })
-
-export const updateProfile = (user: User): ActionTypes => ({
-    type: UPDATE_PROFILE,
-    payload: user
-})
-
-export const loadPosts = (posts: AxiosResponse): ActionTypes => ({
-    type: LOAD_POSTS,
-    payload: posts
-})
-
-export const updatePosts = (friends: number[], keyword: string): ActionTypes => ({
-    type: UPDATE_POSTS,
-    friends: friends,
-    keyword: keyword
-})
-
-export const addPost = (post: Post): ActionTypes => ({
-    type: ADD_POST,
-    payload: post
-})
-
-export const getPosts = (): ActionTypes => ({
-    type: GET_POSTS
-})
-
-export const updateHeadline = (headline: string): ActionTypes => ({
-    type: UPDATE_HEADLINE,
-    payload: headline
-})
-
-export const changeTest = (): ActionTypes => ({
-    type: TEST
-})
-

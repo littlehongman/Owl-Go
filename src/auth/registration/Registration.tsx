@@ -3,43 +3,28 @@ import {useNavigate} from 'react-router-dom';
 
 import { useSelector, useDispatch } from 'react-redux'
 import { useForm} from "react-hook-form";
-import { registerUser } from '../../store/actions';
-import { AppState } from '../../store/types';
+// import { registerUser } from '../../store/actions';
+// import { AppState } from '../../store/types';
 import { BASE_URL } from '../../util/secrets';
 import toast from 'react-hot-toast';
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { AppState } from '../../store/types';
+import { login } from '../../store/actions';
 axios.defaults.withCredentials = true;
 
-// import Form from '../components/Form'
 
-// interface RegisterProps{
-//     stateChanger: React.Dispatch<React.SetStateAction<boolean>>
-// }
 
 const Register = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate();
-    const loginState = useSelector((state: AppState) => state.loginState);
-    const newID = useSelector((state: AppState) => state.users.length + 1);
-    const users = useSelector((state: AppState) => state.users);
+    const username = useSelector((state: AppState) => state.username);
+    // const loginState = useSelector((state: AppState) => state.loginState);
+    // const newID = useSelector((state: AppState) => state.users.length + 1);
+    // const users = useSelector((state: AppState) => state.users);
 
     // React Hook Form
     const { register, handleSubmit, watch, getValues ,formState: { errors } } = useForm()
     const onSubmit = (data: any) => {
-       
-        // dispatch(registerUser({
-        //     id: newID,
-        //     name: getValues('displayName'),
-        //     username: getValues('username'),
-        //     password: getValues('password'),
-        //     email: getValues('email'),
-        //     phone: getValues('phone'),
-        //     birthday: getValues('birthday'),
-        //     zipCode: getValues('zipcode'),
-        //     avatar: "https://api.lorem.space/image/face?w=150&h=150&hash=" + newID,
-        //     friends: [],
-        //     posts: []
-        // }))   
         axios.post(`${BASE_URL}/register`, {
             username: getValues('username'),
             password: getValues('password'),
@@ -49,10 +34,18 @@ const Register = () => {
             birthday: new Date(getValues('birthday')).getTime(),
             zipCode: getValues('zipcode'),
         }).then((res: AxiosResponse) => {
-            
-
+            axios.post(`${BASE_URL}/login`, {
+                username: getValues('username'),
+                password: getValues('password')
+            }).then((res) => {
+                dispatch(login(res.data!.username));
+    
+            }).catch((err: AxiosError) => {
+               console.log(err);
+            });
         }).catch((err: AxiosError) => {
             if (err.response!.status === 409) {
+                console.log(err);
                 toast.error("Username already taken")
             } else {
               // Handle else
@@ -61,19 +54,12 @@ const Register = () => {
     
     }
 
-    const checkExistedUser = (username: string) => {
-        if(users.map((user) => user.username).includes(username)){
-            //toast.error("Duplicate Username", {duration: 1000})
-            return false
-        }
-
-        return true
-    }
-    
     useEffect(() => {
-        if (loginState.isLogin) 
-            navigate('/main');
-    }, [loginState])
+        if (username !== null){
+            navigate("/main");
+        }
+            
+    }, [username])
 
     
 

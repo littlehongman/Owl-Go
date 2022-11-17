@@ -1,3 +1,4 @@
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import React, {useEffect, useState} from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -5,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../store/actions';
 import { AppState, LoginPayload} from '../../store/types';
+import { BASE_URL } from '../../util/secrets';
 // import Form from '../components/Form'
 
 // interface LoginProps{
@@ -16,35 +18,34 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const loginState = useSelector((state: AppState) => state.loginState);
-    const users = useSelector((state: AppState) => state.users);
+    //const loginState = useSelector((state: AppState) => state.loginState);
+    const username = useSelector((state: AppState) => state.username);
 
     const { register, handleSubmit, watch, getValues, formState: { errors } } = useForm <LoginPayload>()
 
     const onSubmit = (data: LoginPayload) => {
-        for(let i = 0; i < users.length; i++){
-            if (users[i].username === getValues('username')){
-                if (users[i].password === getValues('password')){
-                    dispatch(login(i));
-                    return;
-                }
-                else {
-                    toast.error("Wrong Password", {duration: 1000});
-                    return;
-                }
-                
+        axios.post(`${BASE_URL}/login`, {
+            username: getValues('username'),
+            password: getValues('password')
+        }).then((res) => {
+            dispatch(login(res.data!.username));
+
+        }).catch((err: AxiosError) => {
+            if (err.response!.status === 404) {
+                toast.error("Username not existed");
+            } 
+            else if (err.response!.status === 403) {
+                toast.error("Wrong password");
             }
-        }
-        toast.error("Cannot Find User", {duration: 1000});
+        });
     };
 
     useEffect(() => {
-        if (loginState.isLogin){
-            toast.success("Login Successfully", {duration: 1000});
-            navigate('/main');
+        if (username !== null){
+            navigate("/main");
         }
             
-    }, [loginState])
+    }, [username])
 
     return (
         <div className="container w-9/12 mx-auto rounded-xl shadow border p-8 m-10 bg-white">

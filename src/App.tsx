@@ -8,8 +8,8 @@ import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
 
 import Auth from './auth/auth';
 import Header from './components/Header';
-import Main from './main/main';
-import Profile from './profile/profile';
+// import Main from './main/main';
+// import Profile from './profile/profile';
 
 import './App.css';
 import Register from "./auth/registration/Registration";
@@ -21,36 +21,11 @@ import { useEffect } from "react";
 
 // Backend
 import axios from "axios";
+import Main from "./main/main";
 axios.defaults.withCredentials = true;
 
 
 export default function App() {
-  useEffect(() => {
-    // if (!loadDummies){
-      // axios.get(process.env.BACKEND_URL!).then(res => {
-      //     console.log(res);
-      // })
-
-      // axios.post("http://localhost:4000/register", {
-      //   username: 'Fink',
-      //   password: '123'
-      // }).then(res => {
-      //   console.log(res);
-      //   axios.post("http://localhost:4000/login", {
-      //       username: 'Fink',
-      //       password: '123'
-      //     }).then(res => {
-      //       console.log(res);
-    
-      //       axios.get("http://localhost:4000/articles").then(res => {
-      //         console.log(res.data);
-      //       })
-      //     })
-
-        
-      // })
-  }, [])
-  
 
   return (
     <Provider store={store}>
@@ -64,7 +39,7 @@ export default function App() {
                 <Route path={'/'} element= {<Auth />}/>
                 <Route path={'/register'} element= {<Register />}/>
                 <Route path={'/main'} element= {<Main />}/>
-                <Route path={'/profile'} element= {<Profile/>}/>
+                {/* <Route path={'/profile'} element= {<Profile/>}/> */}
             </Routes>
           </Router>
         </ChakraProvider>
