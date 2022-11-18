@@ -14,6 +14,12 @@ export interface User {
     headline?:string
 }
 
+export interface Friend {
+    username: string;
+    headline: string;
+    avatar: string;
+}
+
 // export interface DummyUser {
 //     id: number;
 //     name: string;
@@ -27,13 +33,29 @@ export interface User {
 //     company: any | null;
 // }
 
-export interface Post {
-    id: number;
-    username: string;
-    title: string;
-    body: string;
-    img: string;
-    timestamp: number
+// export interface Post {
+//     id: number;
+//     userId: number;
+//     title: string;
+//     body: string;
+//     img: string;
+//     timestamp: number
+// }
+
+export interface Post{
+    pid: number,
+    username: string,
+    text: string,
+    img: string,
+    timestamp: string;
+    comments: Comment[];
+}
+
+export interface Comment{
+    cid: number,
+    username: string,
+    text: string
+    timestamp: string;
 }
 
 // state: 
@@ -71,4 +93,6 @@ export interface s3IConfig{
     secretAccessKey: string,
     s3Url: string
 }
+
+
 

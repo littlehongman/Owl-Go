@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-// import Friends from './components/Friends'
+import Friends from './components/Friends'
 // import Posts from './components/Posts'
 import Personal from './components/Personal'
 // import ShareBox from './components/ShareBox'
@@ -9,6 +9,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppState, Post} from '../store/types'
 import { useMediaQuery } from 'react-responsive'
 import { useNavigate } from 'react-router-dom'
+import axios, { AxiosError } from 'axios'
+import toast from 'react-hot-toast'
+import { relogin } from '../store/actions'
+import { BASE_URL } from '../util/secrets'
 
 const Main = () => {
     const navigate = useNavigate();
@@ -33,11 +37,25 @@ const Main = () => {
     const isDesktopOrLaptop = useMediaQuery({query: '(min-width: 864px)'})
     const isTabletOrMobile = useMediaQuery({ query: '(max-width: 864px)' })
 
+
+    const getPosts = async() => {
+        axios.get(`${BASE_URL}/articles`).then((res) => {
+            console.log(res);
+            setMainPosts(res.data.articles);
+            console.log(mainPosts);
+
+        }).catch((err: AxiosError) => {
+            if (err.response!.status === 401) {
+                toast.error("Session Expired", {duration: 1000});
+                dispatch(relogin());
+                navigate("/");
+            }
+        });
+    } 
+
+
     useEffect(() => {
-        // if (user === null){
-        //     navigate("../")
-        // } 
-        // dispatch(updatePosts(userFriends, keyword)); // Load for first time
+        getPosts();
     }, [])
 
     // useEffect(() => {
@@ -68,9 +86,9 @@ const Main = () => {
                     {<Posts userId={user?.id} userData={userData} userPosts={displayPosts} keyword={keyword}/>}
                  
                 </div> */}
-                {/* <div className="col-span-2">
-                    <Friends username={user?.username} userFriends={userFriends} setUserFriends={setUserFriends}/>
-                </div> */}
+                <div className="col-span-2">
+                    <Friends username={username!} />
+                </div>
                 
                 {/* <Friends/>
                 <Personal/> */}

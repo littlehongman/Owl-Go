@@ -35,12 +35,12 @@ const Personal = ({username}: UserProps) => {
                 if (err.response!.status === 401) {
                     dispatch(relogin());
                     navigate("/");
+                    console.clear();
                 }
             });
             
         }
         else{
-            console.log(e);
             toast.error("Content Required", {duration: 1000});
         }
     };
@@ -54,6 +54,7 @@ const Personal = ({username}: UserProps) => {
             if (err.response!.status === 401) {
                 dispatch(relogin());
                 navigate("/");
+                console.clear();
             }
         });
 
@@ -64,6 +65,7 @@ const Personal = ({username}: UserProps) => {
             if (err.response!.status === 401) {
                 dispatch(relogin());
                 navigate("/");
+                console.clear();
             }
         });
     } 

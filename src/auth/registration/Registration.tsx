@@ -31,7 +31,7 @@ const Register = () => {
             name: getValues('displayName'),
             email: getValues('email'),
             phone: getValues('phone'),
-            birthday: new Date(getValues('birthday')).getTime(),
+            birthday: getValues('birthday'),
             zipCode: getValues('zipcode'),
         }).then((res: AxiosResponse) => {
             axios.post(`${BASE_URL}/login`, {
