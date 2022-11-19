@@ -9,14 +9,14 @@ import { BASE_URL } from "../../util/secrets";
 
 interface UserProps {
     username?: string
-    // userFriends?: number[];
-    // setUserFriends: React.Dispatch<React.SetStateAction<number[]>>
+    friendData: Friend[];
+    setFriendData: React.Dispatch<React.SetStateAction<Friend[]>>
 }
 
 
-const Friends = ({ username }: UserProps) => {
+const Friends = ({ username, friendData, setFriendData }: UserProps) => {
     // const users = useSelector((state: AppState) => state.users)
-    const [friendData, setFriendData] = useState<Friend[]>();
+    // const [friendData, setFriendData] = useState<Friend[]>();
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const [newFriendName, setNewFriendName] = useState<string>("")

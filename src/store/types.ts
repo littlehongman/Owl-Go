@@ -1,15 +1,12 @@
 
 export interface User {
-    id: number;
+    username: string;
     name: string;
-    username: string; // Display Name
-    password: string;
-    email: string | null;
-    phone: string | null;
+    email: string;
+    phone: string;
     birthday: string;
-    zipCode: string | null;
+    zipCode: string;
     avatar: string;
-    posts: Post[] ;
     friends?: number[]
     headline?:string
 }
@@ -44,7 +41,10 @@ export interface Friend {
 
 export interface Post{
     pid: number,
-    username: string,
+    author: {
+        username: string,
+        avatar: string
+    }
     text: string,
     img: string,
     timestamp: string;
@@ -53,7 +53,10 @@ export interface Post{
 
 export interface Comment{
     cid: number,
-    username: string,
+    author: {
+        username: string,
+        avatar: string
+    }
     text: string
     timestamp: string;
 }

@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import Friends from './components/Friends'
-// import Posts from './components/Posts'
+import Posts from './components/Posts'
 import Personal from './components/Personal'
 // import ShareBox from './components/ShareBox'
 // import SearchBar from './components/SearchBar'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { AppState, Post} from '../store/types'
+import { AppState, Friend, Post} from '../store/types'
 import { useMediaQuery } from 'react-responsive'
 import { useNavigate } from 'react-router-dom'
 import axios, { AxiosError } from 'axios'
 import toast from 'react-hot-toast'
 import { relogin } from '../store/actions'
 import { BASE_URL } from '../util/secrets'
+import SearchBar from './components/SearchBar'
+import ShareBox from './components/ShareBox'
 
 const Main = () => {
     const navigate = useNavigate();
@@ -24,6 +26,7 @@ const Main = () => {
 
     // Friends
     // const [userFriends, setUserFriends] = useState<number[]>([...user?.friends?? []])
+    const [friendData, setFriendData] = useState<Friend[]>([]);
 
     // Posts
     const displayPosts: any = [];
@@ -40,9 +43,9 @@ const Main = () => {
 
     const getPosts = async() => {
         axios.get(`${BASE_URL}/articles`).then((res) => {
-            console.log(res);
+            console.log(res.data);
             setMainPosts(res.data.articles);
-            console.log(mainPosts);
+            //console.log(mainPosts);
 
         }).catch((err: AxiosError) => {
             if (err.response!.status === 401) {
@@ -56,7 +59,7 @@ const Main = () => {
 
     useEffect(() => {
         getPosts();
-    }, [])
+    }, [friendData])
 
     // useEffect(() => {
     //     setMainPosts(displayPosts);
@@ -77,17 +80,17 @@ const Main = () => {
                     <Personal username={username!} />
                     {/* /<Friends/> */}
                 </div>
-                {/* <div className="col-span-4">
+                <div className="col-span-4">
                    
                     <SearchBar setKeyword={setKeyword}/>
                    
-                    <ShareBox userId={user?.id} setNewPost={setNewPost} />
+                    <ShareBox/>
                    
-                    {<Posts userId={user?.id} userData={userData} userPosts={displayPosts} keyword={keyword}/>}
+                    {(mainPosts.length > 0) && <Posts username={username!} mainFeeds={mainPosts} keyword={keyword}/>}
                  
-                </div> */}
+                </div>
                 <div className="col-span-2">
-                    <Friends username={username!} />
+                    <Friends username={username!} friendData={friendData!} setFriendData={setFriendData!}/>
                 </div>
                 
                 {/* <Friends/>

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 // import { useDispatch, useSelector } from 'react-redux'
 import { useFilePicker } from 'use-file-picker'
 import { AppState, Post, User } from '../../store/types'
-import { Button, ButtonGroup } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import { MdBuild , MdCall } from "react-icons/md"
 import { BiMessageAltDetail } from "react-icons/bi"
 import styled, { keyframes } from "styled-components";
@@ -26,15 +26,14 @@ const SlideDiv = styled.div`
 
 
 interface UserProps {
-    userId?: number;
-    userData?: string[]
-    userPosts?: Post[];
+    username?: string;
+    mainFeeds?: Post[];
     keyword: string
 }
 
-const Posts = ({userId, userData, userPosts, keyword}: UserProps) => {
+const Posts = ({username, mainFeeds, keyword}: UserProps) => {
  
-    const getDisplayTime = (timestamp: number): string => {
+    const getDisplayTime = (timestamp: string): string => {
         let datetime = new Date(timestamp).toString().split(' ');
         let date = datetime.slice(1, 4);
         let time = datetime.slice(4,5)[0].split(':').slice(0, 2);
@@ -50,7 +49,7 @@ const Posts = ({userId, userData, userPosts, keyword}: UserProps) => {
         return false
     }
 
-    const [showComment, setShowComment] = useState<boolean[]>(new Array(userPosts?.length).fill(true));
+    const [showComment, setShowComment] = useState<boolean[]>(new Array(mainFeeds?.length).fill(true));
 
     const showCommentHandler = (idx: number) => {
         const boolArr = [...showComment];
@@ -69,18 +68,18 @@ const Posts = ({userId, userData, userPosts, keyword}: UserProps) => {
     return (//bg-white shadow-lg rounded-lg mx-4 mt-10 md:mx-auto my-6 max-w-md md:max-w-2xlZ
          <div>
             <div className="place-items-center items-center justify-center">
-                {userPosts?.map((post, i) => (
-                    // ((filter(userData? userData[post.userId - 1]:"")) || filter(post.body)) &&
+                {mainFeeds?.map((post, i) => (
+                    ((filter(post.author.username)) || filter(post.text)) &&
                     <div className="items-center justify-center mx-auto mb-4 min-w-full" key={i}>
                         <div className="pt-2 pb-4 px-4 items-center justify-center bg-white dark:bg-gray-900 shadow rounded-lg max-w-lg min-w-full border">
                             <div className="flex mt-4 mb-4">
-                                {/* <img className="w-12 h-12 rounded-full" src={"https://api.lorem.space/image/face?w=150&h=150&hash=" + post.userId}/>
+                                <img className="w-12 h-12 rounded-full" src={post.author.avatar}/>
                                 <div className="ml-2 mt-0.5">
-                                    <span className="block font-medium text-base leading-snug text-black dark:text-gray-100">{userData? userData[post.userId - 1]:""}</span>
+                                    <span className="block font-medium text-base leading-snug text-black dark:text-gray-100">{post.author.username}</span>
                                     <span className="block text-sm text-gray-500 dark:text-gray-400 font-light leading-snug">{getDisplayTime(post.timestamp)}</span>
-                                </div> */}
+                                </div>
                             </div>
-                            {/* <p className="text-gray-800 dark:text-gray-100 leading-snug md:leading-normal">{post.body}</p> */}
+                            <p className="text-gray-800 dark:text-gray-100 leading-snug md:leading-normal">{post.text}</p>
                             <img className="mt-2 mb-4" src={post.img}/>
                             <hr className="mb-1"/>
         
@@ -93,21 +92,21 @@ const Posts = ({userId, userData, userPosts, keyword}: UserProps) => {
                              
                                 <hr/>
                                 <List spacing={3} className="mt-4">
-                                    {comments.map((comment, i) => (
+                                    {post.comments.map((comment, i) => (
                                         <ListItem key={i}>
                                         <div className="flex space-x-1">
                                                 <div className="flex-shrink-0">
-                                                    <img className="w-8 h-8 rounded-full" src={`https://api.lorem.space/image/face?w=150&h=150&hash=${i}`} alt="Neil image"/>
+                                                    <img className="w-8 h-8 rounded-full" src={comment.author.avatar} alt="Neil image"/>
                                                 </div>
                                                 <div className="bg-gray-100 p-2 w-full rounded-lg ">
                                                     <div className="flex-1 min-w-0">
                                                         <p className="text-sm font-bold text-gray-900 truncate dark:text-white">
-                                                            {comment.name}
+                                                            {comment.author.username}
                                                         </p>
                                                     </div>
                                                     <div className="flex-1 min-w-0 mt-2">
                                                         <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                                            {comment.body}
+                                                            {comment.text}
                                                         </p>
                                                     </div>
                                                 </div>

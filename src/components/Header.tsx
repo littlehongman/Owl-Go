@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Button } from "@material-tailwind/react";
@@ -7,6 +7,10 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useDispatch, useSelector } from 'react-redux';
 // import { AppState } from '../store/types';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { logout, relogin } from '../store/actions';
+import { AppState } from '../store/types';
+import axios, { AxiosError } from 'axios';
+import { BASE_URL } from '../util/secrets';
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ')
@@ -15,28 +19,42 @@ function classNames(...classes: any[]) {
 
 const Header = () => {
     const dispatch = useDispatch();
-    // const user = useSelector((state: AppState) => {
-    //     if(state.loginState.isLogin) {
-    //         return state.users[state.loginState.userId]
-    //     }
-    //     return null;
-    // });
+    const username = useSelector((state: AppState) => state.username)
     
-    // const location = useLocation();
-    // const navigate = useNavigate();
+    const location = useLocation();
+    const navigate = useNavigate();
 
-    // const logoutUser = () => {
-    //     dispatch(logout())
-    // }
+    const [avatar, setAvatar] = useState<string>("");
+
+    const logoutUser = () => {
+        dispatch(logout())
+    }
 
     const navigation: any[] = [
-        { name: 'Dashboard', href: '#', current: true },
+        { name: 'Dashboard', href: '../main', current: true },
     ]
 
     const dropdownOptions: any[] = [
         { name: 'Your Profile', href: '../profile', action: null},
         // { name: 'Logout', href: '../', action: logout()}
     ]
+
+    const getData = async() => {
+        axios.get(`${BASE_URL}/avatar`).then((res) => {
+            setAvatar(res.data.avatar);
+
+        }).catch((err: AxiosError) => {
+            if (err.response!.status === 401) {
+                dispatch(relogin());
+                navigate("/");
+                console.clear();
+            }
+        });
+    } 
+
+    useEffect(() => {
+        getData();
+    }, []);
     
     return (
         <Disclosure as="nav" className="bg-gray-800">
@@ -98,16 +116,16 @@ const Header = () => {
                             </button> */}
 
                             {/* Profile dropdown */}
-                            {false&& 
+                            {username && 
                                 
                                 <Menu as="div" className="relative ml-3">
                                 <div className="flex">
-                                    {/* <h6 className="pt-1 pr-2 font-bold text-white">{user.username}</h6> */}
+                                    <h6 className="pt-1 pr-2 font-bold text-white">{username}</h6>
                                     <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                     <span className="sr-only">Open user menu</span>
                                     <img
                                         className="h-8 w-8 rounded-full"
-                                        // src={user?.avatar}
+                                        src={avatar}
                                         alt=""
                                     />
                                     </Menu.Button>
@@ -140,10 +158,10 @@ const Header = () => {
                                 </Transition>
                                 </Menu>
                             }
-                            {!false &&
+                            {!username &&
                                 <div>
-                                    {/* {location.pathname === '/register' && <Button onClick={() => navigate('../')} color="white">Login</Button> } */}
-                                    {/* {location.pathname === '/' && <Button onClick={() => navigate('/register')} color="white">  Register </Button>} */}
+                                    {location.pathname === '/register' && <Button onClick={() => navigate('../')} color="white">Login</Button> }
+                                    {location.pathname === '/' && <Button onClick={() => navigate('/register')} color="white">  Register </Button>}
                                 </div>
                             }   
                         </div>
