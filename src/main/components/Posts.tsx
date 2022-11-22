@@ -5,7 +5,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { useFilePicker } from 'use-file-picker'
 import { AppState, Post, User } from '../../store/types'
 import { Button, IconButton, ButtonGroup } from '@chakra-ui/react'
-import { MdBuild , MdCall } from "react-icons/md"
+import { HiPencil } from "react-icons/hi"
 import { BiMessageAltDetail } from "react-icons/bi"
 import { HiDotsHorizontal } from "react-icons/hi"
 import styled, { keyframes } from "styled-components";
@@ -33,11 +33,12 @@ const SlideDiv = styled.div`
 
 interface UserProps {
     username?: string;
+    userAvatar?: string
     mainFeeds?: Post[];
     keyword: string
 }
 
-const Posts = ({username, mainFeeds, keyword}: UserProps) => {
+const Posts = ({username, userAvatar, mainFeeds, keyword}: UserProps) => {
  
     const getDisplayTime = (timestamp: string): string => {
         let datetime = new Date(timestamp).toString().split(' ');
@@ -55,9 +56,24 @@ const Posts = ({username, mainFeeds, keyword}: UserProps) => {
         return false
     }
 
+    const createBoolArray = (): boolean[][] => {
+        let boolArr = new Array(10);
+
+        for (let i = 0;i < 10; i++){
+            boolArr[i] = new Array(mainFeeds![i].comments.length).fill(false);
+        }
+
+        return boolArr;
+    }
+
     const [showComment, setShowComment] = useState<boolean[]>(new Array(10).fill(true));
     const [showEditPost, setShowEditPost] = useState<boolean[]>(new Array(10).fill(false));
-    const [newText, setNewText] = useState<string>("")
+    const [showCommentEdit, setShowCommentEdit] = useState<boolean[][]>(createBoolArray());
+
+
+    const [newText, setNewText] = useState<string>("");
+    const [newComment, setNewComment] = useState<string>("");
+    const [editComment, setEditComment] = useState<string>("");
     const [currentFeeds, setCurrentFeeds] = useState<Post[]>(mainFeeds!);
 
     const showCommentHandler = (idx: number) => {
@@ -74,6 +90,15 @@ const Posts = ({username, mainFeeds, keyword}: UserProps) => {
         setShowEditPost(boolArr);
     }
 
+    const showCommentEditHandler = (postIdx: number, commentIdx: number) => {
+        const boolArr = [...showCommentEdit];
+
+        boolArr[postIdx][commentIdx] = !boolArr[postIdx][commentIdx];
+
+        setShowCommentEdit(boolArr);
+        setEditComment("");
+    }
+
     const updatePost = async(idx: number, pid: number) => {
 
         await axios.put(`${BASE_URL}/articles/${pid}`,{
@@ -83,7 +108,47 @@ const Posts = ({username, mainFeeds, keyword}: UserProps) => {
             newCurrFeeds[idx].text = newText;
             
             console.log(mainFeeds);
-            //setCurrentFeeds(newCurrFeeds);
+            setCurrentFeeds(newCurrFeeds); 
+            
+            showEditPostHandler(idx);
+            toast.success("Post Updated", {duration: 1000});
+
+        }).catch((err: AxiosError) => {
+            if (err.response!.status === 401) {
+                return;
+            }
+        });
+       
+    }
+
+    const createComment = async(idx: number, pid: number) => {
+        if (newComment.trim() === ""){
+            toast.error("Content Required", {duration: 1000});
+            return;
+        }
+
+        await axios.put(`${BASE_URL}/articles/${pid}`,{
+            text: newComment,
+            commentId: "-1",
+            avatar: userAvatar
+        }).then((res) => { // NOTE: THIS IS MUTATION HERE!!!!
+            // const newCurrFeeds = [...currentFeeds!];
+            const comment: any = {
+                cid: currentFeeds[idx].comments.length,
+                author: {
+                    username: username,
+                    avatar: userAvatar
+                },
+                text: newComment,
+                timestamp: Date.now()
+            }
+
+            currentFeeds[idx].comments = [...currentFeeds[idx].comments, comment];
+          
+            toast.success("New Comment", {duration: 1000});
+
+            showCommentHandler(idx);
+            
 
         }).catch((err: AxiosError) => {
             if (err.response!.status === 401) {
@@ -91,9 +156,38 @@ const Posts = ({username, mainFeeds, keyword}: UserProps) => {
             }
         });
 
-        showEditPostHandler(idx);
-        toast.success("Post Updated", {duration: 1000});
+
     }
+
+    const updateComment = async(postIdx: number, pid: number, cid: number) => {
+        if (editComment.trim() === ""){
+            toast.error("Content Required", {duration: 1000});
+        }
+
+        await axios.put(`${BASE_URL}/articles/${pid}`,{
+            text: editComment,
+            commentId: cid,
+            avatar: userAvatar
+        }).then((res) => { // NOTE: THIS IS MUTATION HERE!!!!
+            // const newCurrFeeds = [...currentFeeds!];
+           
+            currentFeeds[postIdx] = res.data.article;
+            toast.success("Update Comment", {duration: 1000});
+
+            showCommentHandler(postIdx);
+            showCommentEditHandler(postIdx, cid);
+
+        }).catch((err: AxiosError) => {
+            if (err.response!.status === 401) {
+                return;
+            }
+        });
+
+
+
+    }
+
+
 
 
     const comments: any[] = [
@@ -220,27 +314,74 @@ const Posts = ({username, mainFeeds, keyword}: UserProps) => {
                                 {/* <Button leftIcon={<MdBuild />} colorScheme='facebook' variant='outline'>Modify</Button> */}
                             </div>
                             <div hidden={showComment[i]} className="mt-4">
-                             
-                                <hr/>
+                                {/* <hr/> */}
+                                <div className='flex'>
+                                    <img className="w-12 h-12 rounded-full mr-2 mt-2" src={userAvatar}/>
+                                    <input 
+                                        id="chat" 
+                                        placeholder="New comment..." 
+                                        type="text"
+                                        // rows={1} 
+                                        onChange={(e) => setNewComment(e.target.value)} 
+                                        className="flex block mx-auto text-base mt-2 p-2.5 w-full text-sm text-gray-900 bg-white rounded-xl border border-gray-300 focus:ring-teal-300 focus:border-teal-200 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-sky-300">
+                                    </input>
+                                    <Button className="ml-4 mt-4 rounded-lg" type="submit" onClick={() => createComment(i, post.pid)} colorScheme='teal' size='sm'>
+                                        Add
+                                    </Button>
+                                </div>
                                 <List spacing={3} className="mt-4">
-                                    {post.comments.map((comment, i) => (
-                                        <ListItem key={i}>
+                                    {post.comments.map((comment, c_i) => (
+                                        <ListItem key={c_i}>
                                         <div className="flex space-x-1">
                                                 <div className="flex-shrink-0">
                                                     <img className="w-8 h-8 rounded-full" src={comment.author.avatar} alt="Neil image"/>
                                                 </div>
-                                                <div className="bg-gray-100 p-2 w-full rounded-lg ">
-                                                    <div className="flex-1 min-w-0">
-                                                        <p className="text-sm font-bold text-gray-900 truncate dark:text-white">
-                                                            {comment.author.username}
-                                                        </p>
+                                                <div className="bg-gray-100 p-2 w-full rounded-lg flex">
+                                                    <div className="flex-1">
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-sm font-bold text-gray-900 truncate dark:text-white">
+                                                                {comment.author.username}
+                                                            </p>
+                                                        </div>
+                                                        <div className="flex-1 min-w-0 mt-2">
+                                                            { !showCommentEdit[i][c_i] &&
+                                                                <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                                                    {comment.text}
+                                                                </p>
+
+                                                            }                                        
+                                                            { showCommentEdit[i][c_i] &&
+                                                                <div className='flex'>
+                                                                    <input 
+                                                                        id="chat" 
+                                                                        placeholder="New comment..." 
+                                                                        type="text"
+                                                                        // rows={1} 
+                                                                        defaultValue={comment.text}
+                                                                        onChange={(e) => setEditComment(e.target.value)} 
+                                                                        className="flex block mx-auto text-base mt-2 p-2.5 w-full text-sm text-gray-900 bg-white rounded-xl border border-gray-300 focus:ring-teal-300 focus:border-teal-200 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-sky-300">
+                                                                    </input>  
+                                                                    <ButtonGroup variant='outline' spacing='2' className="mt-4 ml-4 float-right">
+                                                                        <Button colorScheme='blue' className="" size='sm' onClick={() => updateComment(i, post.pid, comment.cid)}>Save</Button> 
+                                                                        <Button colorScheme='black' className="" size='sm' onClick={() => showCommentEditHandler(i, c_i)}>Cancel</Button> 
+                                                                    </ButtonGroup>
+                                                                    
+                                                                </div> 
+                                                            }
+                                                        </div>
                                                     </div>
-                                                    <div className="flex-1 min-w-0 mt-2">
-                                                        <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                                            {comment.text}
-                                                        </p>
-                                                    </div>
+                                                    { (comment.author.username === username) &&
+                                                        <IconButton
+                                                            variant='ghost'
+                                                            colorScheme='teal'
+                                                            className='flex-2'
+                                                            aria-label='Send email'
+                                                            icon={<HiPencil />}
+                                                            onClick={() => showCommentEditHandler(i, c_i)}
+                                                        />
+                                                    }
                                                 </div>
+                                               
                                             </div>
                                         </ListItem>
                                     ))}

@@ -57,7 +57,7 @@ const Main = () => {
     }
 
 
-    const getPosts = async() => {
+    const getData = async() => {
         await axios.get(`${BASE_URL}/articles`).then((res) => {
             setLoading(true);
             setMainPosts(res.data.articles);
@@ -70,13 +70,26 @@ const Main = () => {
                 navigate("/");
             }
         });
+
+        await axios.get(`${BASE_URL}/avatar`).then((res) => {
+            setLoading(true);
+            setUserAvatar(res.data.avatar);
+            setLoading(false);
+
+        }).catch((err: AxiosError) => {
+            if (err.response!.status === 401) {
+                dispatch(relogin());
+                navigate("/");
+                console.clear();
+            }
+        });
     } 
 
 
 
     useEffect(() => {
-        getPosts();
-        console.log("res");
+        getData();
+        // console.log("res");
     }, [friendData])
 
  
@@ -95,7 +108,7 @@ const Main = () => {
                     
                         <ShareBox username={username!} setMainPosts={setMainPosts} />
                     
-                        {(mainPosts.length > 0) && <Posts username={username!} mainFeeds={currentPosts} keyword={keyword}/>}
+                        {(mainPosts.length > 0) && <Posts username={username!} userAvatar={userAvatar} mainFeeds={currentPosts} keyword={keyword}/>}
 
                         <Grid>
                             <Grid.Column textAlign="center">
