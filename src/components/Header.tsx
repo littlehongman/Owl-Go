@@ -14,7 +14,7 @@ import { BASE_URL } from '../util/secrets';
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ')
-  }
+}
 
 
 const Header = () => {
@@ -25,6 +25,7 @@ const Header = () => {
     const navigate = useNavigate();
 
     const [avatar, setAvatar] = useState<string>("");
+    const [isLoading, setLoading] = useState(false);
 
     const logoutUser = () => {
         dispatch(logout())
@@ -36,12 +37,14 @@ const Header = () => {
 
     const dropdownOptions: any[] = [
         { name: 'Your Profile', href: '../profile', action: null},
-        // { name: 'Logout', href: '../', action: logout()}
+        { name: 'Logout', href: '../', action: logout()}
     ]
 
     const getData = async() => {
-        axios.get(`${BASE_URL}/avatar`).then((res) => {
+        await axios.get(`${BASE_URL}/avatar`).then((res) => {
+            setLoading(true);
             setAvatar(res.data.avatar);
+            setLoading(false);
 
         }).catch((err: AxiosError) => {
             if (err.response!.status === 401) {
@@ -56,7 +59,12 @@ const Header = () => {
         getData();
     }, []);
     
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+    
     return (
+
         <Disclosure as="nav" className="bg-gray-800">
             {({ open }) => (
                 <>
@@ -87,22 +95,22 @@ const Header = () => {
                                 />
                             </div>
                             <div className="hidden sm:ml-6 sm:block">
-                            {false &&
-                            <div className="flex space-x-4">
-                                {navigation.map((item) => (
-                                <a
-                                    key={item.name}
-                                    href={item.href}
-                                    className={classNames(
-                                    item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                                    'px-3 py-2 rounded-md text-sm font-medium'
-                                    )}
-                                    aria-current={item.current ? 'page' : undefined}
-                                >
-                                    {item.name}
-                                </a>
-                                ))}
-                            </div>
+                            {username &&
+                                <div className="flex space-x-4">
+                                    {navigation.map((item) => (
+                                    <a
+                                        key={item.name}
+                                        href={item.href}
+                                        className={classNames(
+                                        item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                        'px-3 py-2 rounded-md text-sm font-medium'
+                                        )}
+                                        aria-current={item.current ? 'page' : undefined}
+                                    >
+                                        {item.name}
+                                    </a>
+                                    ))}
+                                </div>
                             }
                             </div>
                         </div>
@@ -119,43 +127,45 @@ const Header = () => {
                             {username && 
                                 
                                 <Menu as="div" className="relative ml-3">
-                                <div className="flex">
-                                    <h6 className="pt-1 pr-2 font-bold text-white">{username}</h6>
-                                    <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                                    <span className="sr-only">Open user menu</span>
-                                    <img
-                                        className="h-8 w-8 rounded-full"
-                                        src={avatar}
-                                        alt=""
-                                    />
-                                    </Menu.Button>
-                                </div>
-                                <Transition
-                                    as={Fragment}
-                                    enter="transition ease-out duration-100"
-                                    enterFrom="transform opacity-0 scale-95"
-                                    enterTo="transform opacity-100 scale-100"
-                                    leave="transition ease-in duration-75"
-                                    leaveFrom="transform opacity-100 scale-100"
-                                    leaveTo="transform opacity-0 scale-95"
-                                >
-                                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                        {dropdownOptions.map((item, i) => (
-                                            <Menu.Item key={i}>
-                                                {({ active }) => (
-                                                <a
-                                                    href={item.href}
-                                                    onClick={() => dispatch(item.action)}
-                                                    className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                                                >
-                                                    {item.name}
-                                                </a>
-                                                )}
-                                            </Menu.Item>
+                                    <div className="flex">
+                                        <h6 className="pt-1 pr-2 font-bold text-white">{username}</h6>
+                                        <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                                        <span className="sr-only">Open user menu</span>
+                                        
+                                        <img
+                                            className="h-8 w-8 rounded-full"
+                                            src={avatar}
+                                            alt=""
+                                        />
+                                        
+                                        </Menu.Button>
+                                    </div>
+                                    <Transition
+                                        as={Fragment}
+                                        enter="transition ease-out duration-100"
+                                        enterFrom="transform opacity-0 scale-95"
+                                        enterTo="transform opacity-100 scale-100"
+                                        leave="transition ease-in duration-75"
+                                        leaveFrom="transform opacity-100 scale-100"
+                                        leaveTo="transform opacity-0 scale-95"
+                                    >
+                                        <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                            {dropdownOptions.map((item, i) => (
+                                                <Menu.Item key={i}>
+                                                    {({ active }) => (
+                                                    <a
+                                                        href={item.href}
+                                                        onClick={() => dispatch(item.action)}
+                                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                                    >
+                                                        {item.name}
+                                                    </a>
+                                                    )}
+                                                </Menu.Item>
 
-                                        ))}
-                                    </Menu.Items>
-                                </Transition>
+                                            ))}
+                                        </Menu.Items>
+                                    </Transition>
                                 </Menu>
                             }
                             {!username &&
@@ -168,7 +178,7 @@ const Header = () => {
                     </div>
                 </div>
                 
-                {false &&
+                {/* {avatar &&
                     <Disclosure.Panel className="sm:hidden">
                         <div className="space-y-1 px-2 pt-2 pb-3">
                         {navigation.map((item) => (
@@ -187,18 +197,11 @@ const Header = () => {
                         ))}
                         </div>
                     </Disclosure.Panel>
-                }
+                } */}
                 </>
             )}
         </Disclosure>
-        
-        
-    
-        
-       
-        
-    )
-}
+    )}
 
 
 export default Header

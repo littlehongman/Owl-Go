@@ -18,6 +18,7 @@ const Personal = ({username}: UserProps) => {
     const navigate = useNavigate();
 
     const handleClick = async(e: React.FormEvent<HTMLFormElement>) => {
+        
         e.preventDefault();
         const newHeadline: string = headlineInput.current!.value;
         

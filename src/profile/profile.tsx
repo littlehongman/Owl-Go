@@ -11,9 +11,10 @@ import { ActionTypes, relogin } from '../store/actions';
 import { BASE_URL } from '../util/secrets';
 import { Button } from '@chakra-ui/button';
 import { GrUpdate } from 'react-icons/gr';
+import { HiArrowPath } from 'react-icons/hi2';
 
 const Profile = () => {
-    
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [user, setUser] = useState<User>();
 
@@ -23,10 +24,10 @@ const Profile = () => {
 
     const { register, handleSubmit, watch, getValues ,formState: { errors } } = useForm()
     // const onSubmit: SubmitHandler<any> = data => console.log(data);
-    const onSubmit = (data: any) => {
-        console.log(data, user);
+    const onSubmit = async(data: any) => {
+        
         if (data.email !== user?.email){
-            axios.put(`${BASE_URL}/email`, {
+            await axios.put(`${BASE_URL}/email`, {
                 email: data.email
             }).then().catch((err: AxiosError) => {
                 if (err.response!.status === 401) {
@@ -39,8 +40,8 @@ const Profile = () => {
         }
 
         if (data.phone !== user?.phone){
-            axios.put(`${BASE_URL}/phone`, {
-                email: data.phone
+            await axios.put(`${BASE_URL}/phone`, {
+                phone: data.phone,
             }).then().catch((err: AxiosError) => {
                 if (err.response!.status === 401) {
                     return;
@@ -52,7 +53,7 @@ const Profile = () => {
         }
 
         if (data.zipCode !== user?.zipCode){
-            axios.put(`${BASE_URL}/zipcode`, {
+            await axios.put(`${BASE_URL}/zipcode`, {
                 zipcode: data.zipCode
             }).then().catch((err: AxiosError) => {
                 if (err.response!.status === 401) {
@@ -67,9 +68,9 @@ const Profile = () => {
         if (plainFiles.length > 0) {
             const formData = new FormData();
             formData.append("image", plainFiles[0]);
+            formData.append("username", user?.username!);
 
-
-            axios.put(`${BASE_URL}/avatar`, formData, {
+            await axios.put(`${BASE_URL}/avatar`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -78,7 +79,7 @@ const Profile = () => {
                     return;
                 }
                 else{
-                    console.log(err);
+                    // console.log(err);
                 }
             });
         }
@@ -87,7 +88,7 @@ const Profile = () => {
     };
 
     const getProfile = async() => {
-        axios.get(`${BASE_URL}/profile`).then((res) => {
+        await axios.get(`${BASE_URL}/profile`).then((res) => {
             setUser(res.data.profile);
 
         }).catch((err: AxiosError) => {
@@ -158,7 +159,7 @@ const Profile = () => {
                        
                     <div className="flex space-x-2 justify-center">
                             
-                            <Button className="relative" colorScheme='teal' variant='solid'>Change Photo</Button>
+                            <Button onClick={() => openFileSelector()} className="relative" colorScheme='teal' variant='outline'>Upload Photo</Button>
                             
                             {/* <button
                                 type="button"
@@ -298,7 +299,7 @@ const Profile = () => {
                         </div> */}
 
                         <div className="w-60 mx-auto">
-                            <Button className="relative flex w-full" leftIcon={<GrUpdate />} colorScheme='orange' variant='solid'>Update</Button>
+                            <Button className="relative flex w-full" type="submit" colorScheme='teal' >Update</Button>
                         </div>
                     </form>
                 </div>
@@ -367,6 +368,3 @@ const Profile = () => {
 
 export default Profile
 
-function dispatch(arg0: ActionTypes) {
-    throw new Error('Function not implemented.');
-}
