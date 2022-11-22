@@ -44,13 +44,14 @@ const Main = () => {
 
     const indexOfLastPost = currentPage * postPerPage;
     const indexOfFirstPost = indexOfLastPost - postPerPage;
-    const [currentPosts, setCurrentPosts] = useState();
+    const currentPosts = mainPosts.slice(indexOfFirstPost, indexOfLastPost);
 
     // Responsive
     const isDesktopOrLaptop = useMediaQuery({query: '(min-width: 864px)'})
     const isTabletOrMobile = useMediaQuery({ query: '(max-width: 864px)' })
 
     const paginate = (data: PaginationProps) => {
+        console.log(mainPosts);
         const page: any = data.activePage;
         setCurrentPage(page);
     }
@@ -75,6 +76,7 @@ const Main = () => {
 
     useEffect(() => {
         getPosts();
+        console.log("res");
     }, [friendData])
 
  
@@ -93,7 +95,7 @@ const Main = () => {
                     
                         <ShareBox username={username!} setMainPosts={setMainPosts} />
                     
-                        {(mainPosts.length > 0) && <Posts username={username!} mainFeeds={currentPosts} setMainFeeds={setCurrentPosts} keyword={keyword}/>}
+                        {(mainPosts.length > 0) && <Posts username={username!} mainFeeds={currentPosts} keyword={keyword}/>}
 
                         <Grid>
                             <Grid.Column textAlign="center">

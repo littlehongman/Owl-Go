@@ -34,11 +34,10 @@ const SlideDiv = styled.div`
 interface UserProps {
     username?: string;
     mainFeeds?: Post[];
-    setMainFeeds: React.Dispatch<React.SetStateAction<Post[]>>
     keyword: string
 }
 
-const Posts = ({username, mainFeeds, setMainFeeds, keyword}: UserProps) => {
+const Posts = ({username, mainFeeds, keyword}: UserProps) => {
  
     const getDisplayTime = (timestamp: string): string => {
         let datetime = new Date(timestamp).toString().split(' ');
@@ -59,6 +58,7 @@ const Posts = ({username, mainFeeds, setMainFeeds, keyword}: UserProps) => {
     const [showComment, setShowComment] = useState<boolean[]>(new Array(10).fill(true));
     const [showEditPost, setShowEditPost] = useState<boolean[]>(new Array(10).fill(false));
     const [newText, setNewText] = useState<string>("")
+    const [currentFeeds, setCurrentFeeds] = useState<Post[]>(mainFeeds!);
 
     const showCommentHandler = (idx: number) => {
         const boolArr = [...showComment];
@@ -78,11 +78,12 @@ const Posts = ({username, mainFeeds, setMainFeeds, keyword}: UserProps) => {
 
         await axios.put(`${BASE_URL}/articles/${pid}`,{
             text: newText
-        }).then((res) => {
-            const newMainFeeds = [...mainFeeds!];
-            newMainFeeds[idx].text = newText;
-
-            setMainFeeds(newMainFeeds);
+        }).then((res) => { // NOTE: THIS IS MUTATION HERE!!!!
+            const newCurrFeeds = [...currentFeeds!];
+            newCurrFeeds[idx].text = newText;
+            
+            console.log(mainFeeds);
+            //setCurrentFeeds(newCurrFeeds);
 
         }).catch((err: AxiosError) => {
             if (err.response!.status === 401) {
@@ -101,13 +102,17 @@ const Posts = ({username, mainFeeds, setMainFeeds, keyword}: UserProps) => {
         {name: "Peter", body: "Avengers Assemble"}
     ];
 
+
+    useEffect(() => {
+        setCurrentFeeds(mainFeeds!);
+    }, [mainFeeds])
    
 
 
     return (//bg-white shadow-lg rounded-lg mx-4 mt-10 md:mx-auto my-6 max-w-md md:max-w-2xlZ
          <div>
             <div className="place-items-center items-center justify-center">
-                {mainFeeds?.map((post, i) => (
+                {currentFeeds?.map((post, i) => (
                     ((filter(post.author.username)) || filter(post.text)) &&
                     <div className="items-center justify-center mx-auto mb-4 min-w-full" key={i}>
                         <div className="pt-2 pb-4 px-4 items-center justify-center bg-white dark:bg-gray-900 shadow rounded-lg max-w-lg min-w-full border">
