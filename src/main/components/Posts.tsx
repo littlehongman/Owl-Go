@@ -1,34 +1,17 @@
 import axios, { AxiosError } from 'axios'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-// import { useDispatch, useSelector } from 'react-redux'
-import { useFilePicker } from 'use-file-picker'
 import { AppState, Post, User } from '../../store/types'
 import { Button, IconButton, ButtonGroup } from '@chakra-ui/react'
 import { HiPencil } from "react-icons/hi"
 import { BiMessageAltDetail } from "react-icons/bi"
-import { HiDotsHorizontal } from "react-icons/hi"
-import styled, { keyframes } from "styled-components";
-import { slideInDown } from 'react-animations';
+
 
 import { ListItem, List } from '@chakra-ui/react'
-import { avatar } from '@material-tailwind/react'
 import { EllipsisHorizontalIcon, ChevronDownIcon, PencilSquareIcon } from '@heroicons/react/24/solid'
 import { BASE_URL } from '../../util/secrets'
 import toast from 'react-hot-toast'
- 
-const slideAnimation = keyframes`${slideInDown}`;
- 
-const SlideDiv = styled.div`
-  animation: 1s ${slideAnimation};
-`;
 
-
-// const bounceAnimation = keyframes`${bounce}`;
-
-// const BouncyDiv = styled.div`
-//   animation: 1s ${bounceAnimation};
-// `;
 
 
 interface UserProps {
@@ -182,19 +165,7 @@ const Posts = ({username, userAvatar, mainFeeds, keyword}: UserProps) => {
                 return;
             }
         });
-
-
-
     }
-
-
-
-
-    const comments: any[] = [
-        {name: "Jacky", body: "Great news to hear"},
-        {name: "Beck", body: "That's brilliant"},
-        {name: "Peter", body: "Avengers Assemble"}
-    ];
 
 
     useEffect(() => {
@@ -385,18 +356,11 @@ const Posts = ({username, userAvatar, mainFeeds, keyword}: UserProps) => {
                                             </div>
                                         </ListItem>
                                     ))}
-                                    
-                                    {/* <ListItem>Consectetur adipiscing elit</ListItem>
-                                    <ListItem>Integer molestie lorem at massa</ListItem>
-                                    <ListItem>Facilisis in pretium nisl aliquet</ListItem> */}
+                                                     
                                 </List>
                             </div>
                         </div>
                         
-                        {/* <SlideDiv hidden={showComment}> */}
-                            {/* <Button hidden={showComment} leftIcon={<BiMessageAltDetail />} colorScheme='facebook' variant='outline'>Comment</Button> */}
-                                
-                        {/* </SlideDiv> */}
                     </div>
                 ))}
             </div>
