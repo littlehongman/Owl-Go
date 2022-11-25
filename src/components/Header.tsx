@@ -57,7 +57,7 @@ const Header = () => {
 
     useEffect(() => {
         getData();
-    }, []);
+    }, [username]);
     
     if (isLoading) {
         return <div>Loading...</div>;
@@ -134,7 +134,7 @@ const Header = () => {
                                         
                                         <img
                                             className="h-8 w-8 rounded-full"
-                                            src={`${avatar}?}`}
+                                            src={avatar}
                                             alt=""
                                         />
                                         

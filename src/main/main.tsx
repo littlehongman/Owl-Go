@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Friends from './components/Friends'
 import Posts from './components/Posts'
 import Personal from './components/Personal'
+
 // import ShareBox from './components/ShareBox'
 // import SearchBar from './components/SearchBar'
 
@@ -11,11 +12,12 @@ import { useMediaQuery } from 'react-responsive'
 import { useNavigate } from 'react-router-dom'
 import axios, { AxiosError } from 'axios'
 import toast from 'react-hot-toast'
-import { relogin } from '../store/actions'
+import { login, relogin } from '../store/actions'
 import { BASE_URL } from '../util/secrets'
 import SearchBar from './components/SearchBar'
 import ShareBox from './components/ShareBox'
 import { Button, Grid, Pagination, PaginationProps } from 'semantic-ui-react'
+import queryString from "query-string"
 
 const Main = () => {
     const navigate = useNavigate();
@@ -58,6 +60,24 @@ const Main = () => {
 
 
     const getData = async() => {
+        if (!username){ // probably third-party login
+            const queryParams = queryString.parse(window.location.search);
+
+            console.log(queryParams);
+            
+        
+            if(queryParams.username){
+                const username: string = queryParams.username as string
+
+                dispatch(login(username));
+            }
+            else{
+                dispatch(relogin());
+                navigate("/");
+            }
+        }
+
+
         await axios.get(`${BASE_URL}/articles`).then((res) => {
             setLoading(true);
             setMainPosts(res.data.articles);
@@ -90,7 +110,7 @@ const Main = () => {
     useEffect(() => {
         getData();
         // console.log("res");
-    }, [friendData])
+    }, [username, friendData])
 
  
     return (
