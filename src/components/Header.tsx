@@ -27,8 +27,16 @@ const Header = () => {
     const [avatar, setAvatar] = useState<string>("");
     const [isLoading, setLoading] = useState(false);
 
-    const logoutUser = () => {
-        dispatch(logout())
+    const logoutUser = async() => {
+        dispatch(logout());
+        await axios.put(`${BASE_URL}/logout`).then((res) => {
+            //navigate("../profile");
+            
+        }).catch((err: AxiosError) => {
+            
+            console.log(err);
+        });
+        
     }
 
     const navigation: any[] = [
@@ -37,7 +45,7 @@ const Header = () => {
 
     const dropdownOptions: any[] = [
         { name: 'Your Profile', href: '../profile', action: null},
-        { name: 'Logout', href: '../', action: logout()}
+        { name: 'Logout', href: '../.', action: logoutUser}
     ]
 
     const getData = async() => {
@@ -49,14 +57,17 @@ const Header = () => {
         }).catch((err: AxiosError) => {
             if (err.response!.status === 401) {
                 dispatch(relogin());
-                navigate("/");
-                console.clear();
+                navigate("../");
+                //console.clear();
             }
         });
     } 
 
     useEffect(() => {
-        getData();
+        if (username){
+            getData();
+        }
+        
     }, [username]);
     
     if (isLoading) {
@@ -134,6 +145,7 @@ const Header = () => {
                                         
                                         <img
                                             className="h-8 w-8 rounded-full"
+                                            referrerPolicy="no-referrer"
                                             src={avatar}
                                             alt=""
                                         />
@@ -155,7 +167,7 @@ const Header = () => {
                                                     {({ active }) => (
                                                     <a
                                                         href={item.href}
-                                                        onClick={() => dispatch(item.action)}
+                                                        onClick={() => item.action() }
                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                                     >
                                                         {item.name}

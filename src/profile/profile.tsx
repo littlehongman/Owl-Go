@@ -10,13 +10,15 @@ import axios, { AxiosError } from 'axios';
 import { ActionTypes, relogin } from '../store/actions';
 import { BASE_URL } from '../util/secrets';
 import { Button } from '@chakra-ui/button';
-import { GrUpdate } from 'react-icons/gr';
+import { GrGoogle, GrUpdate } from 'react-icons/gr';
 import { HiArrowPath } from 'react-icons/hi2';
 
 const Profile = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [user, setUser] = useState<User>();
+    const [account, setAccount] = useState<any>();
+    const [isLoading, setLoading] = useState<boolean>(false);
 
     const [openFileSelector, { plainFiles }] = useFilePicker({
         accept: ['.png', '.jpg'],
@@ -87,9 +89,21 @@ const Profile = () => {
         toast.success("Profile Updated", {duration: 1000});
     };
 
-    const getProfile = async() => {
+    const getData = async() => {
         await axios.get(`${BASE_URL}/profile`).then((res) => {
+            setLoading(true);
             setUser(res.data.profile);
+            
+            axios.get(`${BASE_URL}/account`).then((res) => {
+                
+                setAccount(res.data.account);
+                setLoading(false);
+                console.log(account);
+                
+    
+            }).catch((err: AxiosError) => {
+                
+            });
 
         }).catch((err: AxiosError) => {
             if (err.response!.status === 401) {
@@ -98,16 +112,37 @@ const Profile = () => {
                 navigate("/");
             }
         });
+
+        
     } 
 
+    
+    const linkGoogle = () => {
+        // window.location.href=`${BASE_URL}/google/login`;
+        window.open(`${BASE_URL}/auth/google?state=${user?.username}`, "_self");
+    }
+    
+    const unlinkGoogle = async() => {
+        // window.location.href=`${BASE_URL}/google/login`;
+        await axios.put(`${BASE_URL}/google/unlink`).then((res) => {
+            window.location.reload();
+
+        }).catch((err: AxiosError) => {
+        
+        });
+    }
+
     useEffect(() => {
-        getProfile();
+        getData();
     }, [])
     
     // Upload file
-    
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     return (
+        
         <>
         <div className="flex space-x-2 mt-4 mx-4">
             <button
@@ -302,6 +337,48 @@ const Profile = () => {
                             <Button className="relative flex w-full" type="submit" colorScheme='teal' >Update</Button>
                         </div>
                     </form>
+                    <div className="inline-flex justify-center items-center w-full">
+                            <hr className="my-8 w-full h-px bg-gray-200 border-0 dark:bg-gray-700"/>
+                            <span className="absolute left-1/2 px-3 font-medium text-gray-900 bg-white -translate-x-1/2 dark:text-white dark:bg-gray-900"></span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-6">
+                        {/* <button type="button" className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90  focus:outline-none focus:bg-sky-400 font-medium rounded-lg text-sm pl-12 pr-4 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 mr-2 mb-2">
+                            <svg className="mr-2 ml-2 w-4 h-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
+                            Sign in with Google
+                        </button> */}
+                        <div></div>
+                        { (account['local'] && !account['googleId']) &&
+                            <Button 
+                                onClick={()=>  linkGoogle()}
+                                leftIcon={<GrGoogle />} 
+                                bg='#4285F4' 
+                                color='white' 
+                                variant='solid' 
+                                _hover={{ bg: '#5390f5' }} 
+                                _active={{
+                                    bg: '##72a2f2',
+                                    transform: 'scale(0.98)'
+                                }}>
+                                Link with Google
+                            </Button>
+                        }
+                        { ( account['local'] && account['googleId'] ) &&
+                            <Button 
+                                onClick={()=>  unlinkGoogle()}
+                                leftIcon={<GrGoogle />} 
+                                bg='#de5246' 
+                                color='white' 
+                                variant='solid' 
+                                _hover={{ bg: '#d92d1e' }} 
+                                _active={{
+                                    bg: '#db7269',
+                                    transform: 'scale(0.98)'
+                                }}>
+                                Unlink with Google
+                            </Button>
+                        }
+                        <div></div>
+                    </div>
                 </div>
             </div>
         </div>}

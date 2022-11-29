@@ -63,13 +63,14 @@ const Main = () => {
         if (!username){ // probably third-party login
             const queryParams = queryString.parse(window.location.search);
 
-            console.log(queryParams);
+            //console.log(queryParams);
             
         
             if(queryParams.username){
                 const username: string = queryParams.username as string
 
                 dispatch(login(username));
+                //console.log(username);
             }
             else{
                 dispatch(relogin());
@@ -100,7 +101,7 @@ const Main = () => {
             if (err.response!.status === 401) {
                 dispatch(relogin());
                 navigate("/");
-                console.clear();
+                //console.clear();
             }
         });
     } 

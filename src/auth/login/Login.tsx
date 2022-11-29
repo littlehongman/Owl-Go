@@ -9,7 +9,7 @@ import { AppState, LoginPayload} from '../../store/types';
 import { BASE_URL } from '../../util/secrets';
 
 import { Button } from '@chakra-ui/react';
-import { GrGoogle } from "react-icons/gr"
+import { FaGoogle } from "react-icons/fa"
 // import Form from '../components/Form'
 
 // interface LoginProps{
@@ -39,6 +39,9 @@ const Login = () => {
             } 
             else if (err.response!.status === 403) {
                 toast.error("Wrong password");
+            }
+            else{
+                console.log(err);
             }
         });
     };
@@ -130,8 +133,9 @@ const Login = () => {
                                     Sign in with Google
                                 </button> */}
                                 <Button 
+                                    
                                     onClick={()=>  loginGoogle()}
-                                    leftIcon={<GrGoogle />} 
+                                    leftIcon={<FaGoogle />} 
                                     bg='#4285F4' 
                                     color='white' 
                                     variant='solid' 
