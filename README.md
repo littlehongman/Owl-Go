@@ -1,3 +1,5 @@
+SLIP DAYS USED: 3
+
 netid: hw75 <br/>
 frontend: https://owlgo-v2.surge.sh
 
