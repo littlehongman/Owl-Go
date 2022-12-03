@@ -1,8 +1,8 @@
 netid: hw75 <br/>
 frontend: https://owlgo-final.surge.sh <br/>
 
-Test Username: Mack <br/>
-Test Password: 1234
+test username: Mack <br/>
+test password: 1234
 
 **The profile and logout button will appear when click the avatar on the navbar**
 
