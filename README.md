@@ -2,7 +2,10 @@ SLIP DAYS USED: 3
 
 netid: hw75 <br/>
 frontend: https://owlgo-final.surge.sh/ <br/>
-backend: https://owl-go.herokuapp.com/
+backend: https://owl-go.herokuapp.com/ <br/> <br/>
+
+Username: Mack <br/>
+Password: 1234
 
 **The profile and logout button will appear when click the avatar on the navbar**
 
