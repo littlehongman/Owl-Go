@@ -18,6 +18,7 @@ import SearchBar from './components/SearchBar'
 import ShareBox from './components/ShareBox'
 import { Button, Grid, Pagination, PaginationProps } from 'semantic-ui-react'
 import queryString from "query-string"
+import { axiosInstance } from '../App'
 
 const Main = () => {
     const navigate = useNavigate();
@@ -79,7 +80,7 @@ const Main = () => {
         }
 
 
-        await axios.get(`${BASE_URL}/articles`).then((res) => {
+        await axiosInstance.get(`${BASE_URL}/articles`).then((res) => {
             setLoading(true);
             setMainPosts(res.data.articles);
             setLoading(false);
@@ -92,7 +93,7 @@ const Main = () => {
             }
         });
 
-        await axios.get(`${BASE_URL}/avatar`).then((res) => {
+        await axiosInstance.get(`${BASE_URL}/avatar`).then((res) => {
             setLoading(true);
             setUserAvatar(res.data.avatar);
             setLoading(false);
@@ -111,7 +112,7 @@ const Main = () => {
     useEffect(() => {
         getData();
         // console.log("res");
-    }, [username, friendData])
+    }, [friendData])
 
  
     return (
@@ -151,16 +152,25 @@ const Main = () => {
             
         }
 
-        {/* {isTabletOrMobile &&
+        {isTabletOrMobile &&
             <div>
-                <Personal username={user?.username} userAvatar={user?.avatar} userHeadline={user?.headline?? ""}/>
-                <Friends username={user?.username} userFriends={userFriends} setUserFriends={setUserFriends}/>
-               
+                <Personal username={username!} />
+                <Friends username={username!} friendData={friendData!} setFriendData={setFriendData!}/>
+                <br/>
+
+                <SearchBar setKeyword={setKeyword}/>    
+                <ShareBox username={username!} setMainPosts={setMainPosts} />
              
-                {(mainPosts.length > 0) && <Posts userId={user?.id} userData={userData} userPosts={mainPosts} keyword={keyword}/>}
+                {(mainPosts.length > 0) && <Posts username={username!} userAvatar={userAvatar} mainFeeds={currentPosts} keyword={keyword}/>}
+
+                <Grid>
+                    <Grid.Column textAlign="center">
+                        <Pagination defaultActivePage={1} totalPages={Math.ceil(mainPosts.length / postPerPage)} onPageChange={(e, data) => paginate(data)} />
+                    </Grid.Column>
+                </Grid>
                
             </div>
-        } */}
+        }
         </>
     )
     

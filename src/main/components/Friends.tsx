@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../../App";
 import { relogin } from "../../store/actions";
 import { Friend } from "../../store/types";
 import { BASE_URL } from "../../util/secrets";
@@ -27,12 +28,11 @@ const Friends = ({ username, friendData, setFriendData }: UserProps) => {
 
    
     const handleRemoveFriend = (username: string):void => {
-        axios.delete(`${BASE_URL}/friends/${username}`).then((res) => {
+        axiosInstance.delete(`${BASE_URL}/friends/${username}`).then((res) => {
             setFriendData(res.data.friends);
 
         }).catch((err: AxiosError) => {
             if (err.response!.status === 401) {
-                toast.error("Session Expired", {duration: 1000});
                 dispatch(relogin());
                 navigate("/");
             }
@@ -47,7 +47,7 @@ const Friends = ({ username, friendData, setFriendData }: UserProps) => {
         e.preventDefault();
 
         if (newFriendName.trim() !== ""){
-            axios.put(`${BASE_URL}/friends/${newFriendName}`).then((res) => {
+            axiosInstance.put(`${BASE_URL}/friends/${newFriendName}`).then((res) => {
                 setFriendData(res.data.friends);
                 setNewFriendName("");
                 toast.success("Friend Added", {duration: 1000});
@@ -56,7 +56,6 @@ const Friends = ({ username, friendData, setFriendData }: UserProps) => {
                 const errCode = err.response!.status;
 
                 if (errCode === 401) {
-                    toast.error("Session Expired", {duration: 1000});
                     dispatch(relogin());
                     navigate("/");
                 }
@@ -79,7 +78,7 @@ const Friends = ({ username, friendData, setFriendData }: UserProps) => {
     } 
 
     const getFriends = async() => {
-        axios.get(`${BASE_URL}/friends`).then((res) => {
+        axiosInstance.get(`${BASE_URL}/friends`).then((res) => {
             setFriendData(res.data.friends);
 
         }).catch((err: AxiosError) => {

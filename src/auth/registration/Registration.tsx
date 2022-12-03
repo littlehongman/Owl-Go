@@ -39,11 +39,13 @@ const Register = () => {
                 password: getValues('password')
             }).then((res) => {
                 dispatch(login(res.data!.username));
+                window.location.reload();
     
             }).catch((err: AxiosError) => {
                console.log(err);
             });
         }).catch((err: AxiosError) => {
+            console.clear();
             if (err.response!.status === 409) {
                 console.log(err);
                 toast.error("Username already taken")

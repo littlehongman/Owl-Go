@@ -11,6 +11,7 @@ import { ListItem, List } from '@chakra-ui/react'
 import { EllipsisHorizontalIcon, ChevronDownIcon, PencilSquareIcon } from '@heroicons/react/24/solid'
 import { BASE_URL } from '../../util/secrets'
 import toast from 'react-hot-toast'
+import { axiosInstance } from '../../App'
 
 
 
@@ -40,13 +41,19 @@ const Posts = ({username, userAvatar, mainFeeds, keyword}: UserProps) => {
     }
 
     const createBoolArray = (): boolean[][] => {
-        let boolArr = new Array(10);
+        if (mainFeeds){
+            let boolArr = new Array(mainFeeds.length);
 
-        for (let i = 0;i < 10; i++){
-            boolArr[i] = new Array(mainFeeds![i].comments.length).fill(false);
+            for (let i = 0; i < mainFeeds.length; i++){
+                boolArr[i] = new Array(mainFeeds![i].comments.length).fill(false);
+            }
+
+            //console.log(boolArr);
+            return boolArr;
         }
 
-        return boolArr;
+        return []
+        
     }
 
     const [showComment, setShowComment] = useState<boolean[]>(new Array(10).fill(true));
@@ -84,7 +91,7 @@ const Posts = ({username, userAvatar, mainFeeds, keyword}: UserProps) => {
 
     const updatePost = async(idx: number, pid: number) => {
 
-        await axios.put(`${BASE_URL}/articles/${pid}`,{
+        await axiosInstance.put(`${BASE_URL}/articles/${pid}`,{
             text: newText
         }).then((res) => { // NOTE: THIS IS MUTATION HERE!!!!
             const newCurrFeeds = [...currentFeeds!];
@@ -110,7 +117,7 @@ const Posts = ({username, userAvatar, mainFeeds, keyword}: UserProps) => {
             return;
         }
 
-        await axios.put(`${BASE_URL}/articles/${pid}`,{
+        await axiosInstance.put(`${BASE_URL}/articles/${pid}`,{
             text: newComment,
             commentId: "-1",
             avatar: userAvatar
@@ -147,7 +154,7 @@ const Posts = ({username, userAvatar, mainFeeds, keyword}: UserProps) => {
             toast.error("Content Required", {duration: 1000});
         }
 
-        await axios.put(`${BASE_URL}/articles/${pid}`,{
+        await axiosInstance.put(`${BASE_URL}/articles/${pid}`,{
             text: editComment,
             commentId: cid,
             avatar: userAvatar
@@ -170,7 +177,13 @@ const Posts = ({username, userAvatar, mainFeeds, keyword}: UserProps) => {
 
     useEffect(() => {
         setCurrentFeeds(mainFeeds!);
+        //setShowCommentEdit(createBoolArray());
+        //console.log(mainFeeds);
     }, [mainFeeds])
+
+    if(showCommentEdit.length === 0){
+        return <div>Loading...</div>
+    }
    
 
 

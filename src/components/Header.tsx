@@ -11,6 +11,7 @@ import { logout, relogin } from '../store/actions';
 import { AppState } from '../store/types';
 import axios, { AxiosError } from 'axios';
 import { BASE_URL } from '../util/secrets';
+import { axiosInstance } from '../App';
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ')
@@ -29,7 +30,7 @@ const Header = () => {
 
     const logoutUser = async() => {
         dispatch(logout());
-        await axios.put(`${BASE_URL}/logout`).then((res) => {
+        await axiosInstance.put(`${BASE_URL}/logout`).then((res) => {
             //navigate("../profile");
             
         }).catch((err: AxiosError) => {
@@ -45,11 +46,11 @@ const Header = () => {
 
     const dropdownOptions: any[] = [
         { name: 'Your Profile', href: '../profile', action: null},
-        { name: 'Logout', href: '../.', action: logoutUser}
+        { name: 'Logout', href: '../', action: logoutUser}
     ]
 
     const getData = async() => {
-        await axios.get(`${BASE_URL}/avatar`).then((res) => {
+        await axiosInstance.get(`${BASE_URL}/avatar`).then((res) => {
             setLoading(true);
             setAvatar(res.data.avatar);
             setLoading(false);
@@ -68,7 +69,7 @@ const Header = () => {
             getData();
         }
         
-    }, [username]);
+    }, []);
     
     if (isLoading) {
         return <div>Loading...</div>;

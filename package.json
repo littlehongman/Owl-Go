@@ -45,7 +45,7 @@
   },
   "scripts": {
     "start": "react-scripts  --max_old_space_size=4096 start",
-    "build": "react-scripts --max_old_space_size=4096 build build && cp build/index.html build/200.html",
+    "build": "react-scripts --max_old_space_size=4096 build build && cp build/index.html build/200.html; echo '*' > build/CORS;",
     "test": "react-scripts test --watchAll",
     "eject": "react-scripts eject"
   },

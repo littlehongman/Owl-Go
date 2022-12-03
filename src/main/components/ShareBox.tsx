@@ -11,6 +11,7 @@ import axios, { AxiosError } from "axios";
 import { relogin } from "../../store/actions";
 import { BASE_URL } from "../../util/secrets";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../../App";
 
 
 interface UserProps {
@@ -44,7 +45,7 @@ const ShareBox = ({ username, setMainPosts }: UserProps) => {
                 formData.append("text", message);
                 formData.append("username", username);
 
-                await axios.post(`${BASE_URL}/article`, formData, {
+                await axiosInstance.post(`${BASE_URL}/article`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -63,7 +64,7 @@ const ShareBox = ({ username, setMainPosts }: UserProps) => {
             
             }
             else{
-                await axios.post(`${BASE_URL}/article`,{
+                await axiosInstance.post(`${BASE_URL}/article`,{
                     text: message
                 }).then((res) => {
                     setMainPosts(res.data.articles);

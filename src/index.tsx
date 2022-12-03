@@ -7,6 +7,10 @@ import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
 import Auth from './auth/auth'
 //import reportWebVitals from './reportWebVitals';
 
+console.log = () => {}
+console.error = () => {}
+console.debug = () => {}
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

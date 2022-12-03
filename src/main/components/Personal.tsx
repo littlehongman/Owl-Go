@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import toast from 'react-hot-toast';
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../../App";
 import { login, relogin } from "../../store/actions";
 import { BASE_URL } from "../../util/secrets";
 
@@ -24,7 +25,7 @@ const Personal = ({username}: UserProps) => {
         
 
         if (newHeadline.trim() !== ""){
-            axios.put(`${BASE_URL}/headline`, {
+            axiosInstance.put(`${BASE_URL}/headline`, {
                 headline: newHeadline
             }).then((res) => {
                 setHeadline(res.data.headline);
@@ -48,7 +49,7 @@ const Personal = ({username}: UserProps) => {
 
 
     const getData = async() => {
-        axios.get(`${BASE_URL}/headline`).then((res) => {
+        axiosInstance.get(`${BASE_URL}/headline`).then((res) => {
             setHeadline(res.data.headline);
 
         }).catch((err: AxiosError) => {
@@ -59,7 +60,7 @@ const Personal = ({username}: UserProps) => {
             }
         });
 
-        axios.get(`${BASE_URL}/avatar`).then((res) => {
+        axiosInstance.get(`${BASE_URL}/avatar`).then((res) => {
             setAvatar(res.data.avatar);
 
         }).catch((err: AxiosError) => {

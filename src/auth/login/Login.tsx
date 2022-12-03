@@ -10,12 +10,13 @@ import { BASE_URL } from '../../util/secrets';
 
 import { Button } from '@chakra-ui/react';
 import { FaGoogle } from "react-icons/fa"
+import { axiosInstance } from '../../App';
 // import Form from '../components/Form'
 
 // interface LoginProps{
 //     stateChanger: React.Dispatch<React.SetStateAction<boolean>>
 // }
-
+console.log = console.warn = console.error = () => {};
 
 const Login = () => {
     const navigate = useNavigate();
@@ -27,13 +28,15 @@ const Login = () => {
     const { register, handleSubmit, watch, getValues, formState: { errors } } = useForm <LoginPayload>()
 
     const onSubmit = (data: LoginPayload) => {
-        axios.post(`${BASE_URL}/login`, {
+        axiosInstance.post(`${BASE_URL}/login`, {
             username: getValues('username'),
             password: getValues('password')
         }).then((res) => {
             dispatch(login(res.data!.username));
+            window.location.reload();
 
         }).catch((err: AxiosError) => {
+            console.clear();
             if (err.response!.status === 404) {
                 toast.error("Username not existed");
             } 
@@ -114,7 +117,7 @@ const Login = () => {
                             </div>
                         </div> */}
 
-                        <div>
+                        <div className="mx-auto flex flex-col justify-center items-center">
                             <button type="submit" className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                             <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                                 <svg className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -127,26 +130,27 @@ const Login = () => {
                                 <hr className="my-8 w-full h-px bg-gray-200 border-0 dark:bg-gray-700"/>
                                 <span className="absolute left-1/2 px-3 font-medium text-gray-900 bg-white -translate-x-1/2 dark:text-white dark:bg-gray-900">Or continue with</span>
                             </div>
-                            <div className="grid grid-cols-1 gap-6 mx-20">
+                            
                                 {/* <button type="button" className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90  focus:outline-none focus:bg-sky-400 font-medium rounded-lg text-sm pl-12 pr-4 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 mr-2 mb-2">
                                     <svg className="mr-2 ml-2 w-4 h-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
                                     Sign in with Google
                                 </button> */}
-                                <Button 
-                                    
-                                    onClick={()=>  loginGoogle()}
-                                    leftIcon={<FaGoogle />} 
-                                    bg='#4285F4' 
-                                    color='white' 
-                                    variant='solid' 
-                                    _hover={{ bg: '#5390f5' }} 
-                                    _active={{
-                                        bg: '##72a2f2',
-                                        transform: 'scale(0.98)'
-                                    }}>
-                                    Google
-                                </Button>
-                            </div>
+                            <Button 
+                                
+                                onClick={()=>  loginGoogle()}
+                                leftIcon={<FaGoogle />} 
+                                bg='#4285F4' 
+                                color='white' 
+                                variant='solid' 
+                                className='w-1/2'
+                                _hover={{ bg: '#5390f5' }} 
+                                _active={{
+                                    bg: '##72a2f2',
+                                    transform: 'scale(0.98)'
+                                }}>
+                                Google
+                            </Button>
+                           
                         </div>
                     </form>
                 </div>

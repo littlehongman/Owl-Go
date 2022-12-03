@@ -1,1 +1,1 @@
-export const BASE_URL = process.env.REACT_APP_BACKEND_URL as string;
+export const BASE_URL = "https://owl-go.herokuapp.com"//"http://localhost:4000" "https://owl-go.herokuapp.com" //process.env.REACT_APP_BACKEND_URL as string; 
