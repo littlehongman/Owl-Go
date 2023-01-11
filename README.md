@@ -1,12 +1,9 @@
-frontend: https://owlgo-final.surge.sh <br/>
-
-### Demo Account
+### Demo 
+#### URL
+https://owlgo-final.surge.sh
+#### Account
 username: Mack <br/>
 password: 1234
-
-**The profile and logout button will appear when click the avatar on the navbar**
-
-
 
 
 # Getting Started with Create React App
