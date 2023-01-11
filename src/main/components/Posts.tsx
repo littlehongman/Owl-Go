@@ -52,7 +52,7 @@ const Posts = ({username, userAvatar, mainFeeds, keyword}: UserProps) => {
             return boolArr;
         }
 
-        return []
+        return [[]]
         
     }
 
